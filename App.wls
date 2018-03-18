@@ -82,7 +82,7 @@ Plot[{l[x], u[x], Sin[x]}, {x,0,2*Pi}]
 
 *)
 
-Func = Function[{sp, spozn, y, yd}, 
+Func := Function[{sp, spozn, y, yd}, 
 	If[Length[sp] != Length[spozn] + 1, Throw["sp.length != spozn.length + 1"]];
 	lower = {};
 	upper = {};
@@ -127,28 +127,30 @@ Func = Function[{sp, spozn, y, yd},
 	{lower, upper}
 ];
 
-MakeDemo = Function[{sp, spozn, y, yd},
+MakeDemo := Function[{sp, spozn, y, yd},
 
 	res = Func[sp, spozn, y, yd];
 
 	lowerNodes = res[[1]];
 	upperNodes = res[[2]];
-
+(*
 	Print["lower nodes = ", lowerNodes];
 	Print["upper nodes = ", upperNodes];
-
+*)
 	lowerSegments = NodesToConditionalSegments[lowerNodes];
 	upperSegments = NodesToConditionalSegments[upperNodes];
 
 	l[x_] := Piecewise[lowerSegments];
 	u[x_] := Piecewise[upperSegments];
+	
+	Plot[{l[x], u[x], y[x]}, {x, First[sp], Last[sp]}]
 ];
 
-MakeDemo[{0, Pi, 2*Pi}, {1, -1}, Sin, Cos];
-Plot[{l[x], u[x], Sin[x]}, {x, 0, 2*Pi}]
+MakeDemo[{0, Pi, 2*Pi}, {1, -1}, Sin, Cos]
+MakeDemo[{-3, 0, 4}, {1,-1}, Function[x, x*x*x], Function[x, 3*x*x]]
 
-MakeDemo[{-2,0,2}, {1,-1}, Function[x, x*x*x], Function[x, 3*x*x]];
-Plot[{l[x], u[x], x*x*x}, {x, -2, 2}]
+Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
+
 
 
 
