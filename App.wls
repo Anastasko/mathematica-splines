@@ -147,8 +147,8 @@ MakeDemo = Function[{sp, spozn, y, yd},
 MakeDemo[{0, Pi, 2*Pi}, {1, -1}, Sin, Cos];
 Plot[{l[x], u[x], Sin[x]}, {x, 0, 2*Pi}]
 
-
-
+MakeDemo[{-2,0,2}, {1,-1}, Function[x, x*x*x], Function[x, 3*x*x]];
+Plot[{l[x], u[x], x*x*x}, {x, -2, 2}]
 
 
 
