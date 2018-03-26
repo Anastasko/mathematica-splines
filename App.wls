@@ -146,10 +146,61 @@ MakeDemo := Function[{sp, spozn, y, yd},
 	Plot[{l[x], u[x], y[x]}, {x, First[sp], Last[sp]}]
 ];
 
-MakeDemo[{0, Pi, 2*Pi}, {1, -1}, Sin, Cos]
-MakeDemo[{-3, 0, 4}, {1,-1}, Function[x, x*x*x], Function[x, 3*x*x]]
+points1 = {-Pi, 0, Pi, 2*Pi};
+ozn1 = {1, -1, 1};
+points2 = {-Pi, 0, 2*Pi};
+ozn2 = {1,-1};
 
+res1 = Func[points1, ozn1, Sin, Cos];
+res2 = Func[points2, ozn2, Function[x, x*x*x], Function[x, 3*x*x]];
+Print["res1=",res1]
+Print["res2=",res2]
+
+(*
+*)
+MyCheck := Function[{arg1, arg2, msg},
+	text = StringJoin["arg1.", msg, " ", ToString[arg1], " != arg2.", msg, " ", ToString[arg2], " "];
+	If[arg1 != arg2, Throw[text]];
+];
+
+(*
+arg1,2 = { 
+		{ {1, k, m}, {2, k, m} } - lower , 
+		{ {1, k, m}, {2, k, m} } - upper
+	   }
+*)
+Func2 := Function[{arg1, arg2, op},
+	MyCheck[arg1[[1]], arg1[[2]], "arg1 lower and upper length must be equal"];
+	MyCheck[arg2[[1]], arg2[[2]], "arg2 lower and upper length must be equal"];
+	n = Length[arg1[[1]]];
+	m = Length[arg2[[1]]];
+	MyCheck[arg1[[1]][[1]][[1]], arg2[[1]][[1]][[1]], "lower.start"];
+	MyCheck[arg1[[2]][[1]][[1]], arg2[[2]][[1]][[1]], "upper.start"];
+	MyCheck[arg1[[1]][[n]][[1]], arg2[[1]][[m]][[1]], "lower.end"];
+	MyCheck[arg1[[2]][[n]][[1]], arg2[[2]][[m]][[1]], "upper.end"];
+	a1 = {};
+	a2 = {};
+	i = 1;
+	j = 1;
+	While[i<=n || j<=m,
+		i++;
+		j++;
+	];
+	res = {};
+	res
+]
+res = Func2[res1, res2, "+"];
+Print["res=",res];
+
+MakeDemo[points1, ozn1, Function[x, -Sin[x]], Function[x, -Cos[x]]]
+MakeDemo[points2, ozn2, Function[x, x*x*x], Function[x, 3*x*x]]
+
+Plot[(x*x*x/20 - 5*Sin[x]), {x, -Pi, 2*Pi}]
+(*
 Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
+*)
+
+
 
 
 
