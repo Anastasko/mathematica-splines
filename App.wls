@@ -127,9 +127,7 @@ Func := Function[{sp, spozn, y, yd},
 	{lower, upper}
 ];
 
-MakeDemo := Function[{sp, spozn, y, yd},
-
-	res = Func[sp, spozn, y, yd];
+MyVisualize := Function[{res, y, le, ri}, 
 
 	lowerNodes = res[[1]];
 	upperNodes = res[[2]];
@@ -139,22 +137,19 @@ MakeDemo := Function[{sp, spozn, y, yd},
 *)
 	lowerSegments = NodesToConditionalSegments[lowerNodes];
 	upperSegments = NodesToConditionalSegments[upperNodes];
-
-	l[x_] := Piecewise[lowerSegments];
-	u[x_] := Piecewise[upperSegments];
 	
-	Plot[{l[x], u[x], y[x]}, {x, First[sp], Last[sp]}]
+	lo[x_] := Piecewise[lowerSegments];
+	up[x_] := Piecewise[upperSegments];
+	
+	Plot[{lo[x], up[x], y[x]}, {x, le, ri}]
 ];
 
-points1 = {-Pi, 0, Pi, 2*Pi};
-ozn1 = {1, -1, 1};
-points2 = {-Pi, 0, 2*Pi};
-ozn2 = {1,-1};
+MakeDemo := Function[{sp, spozn, yfunc, yd},
 
-res1 = Func[points1, ozn1, Sin, Cos];
-res2 = Func[points2, ozn2, Function[x, x*x*x], Function[x, 3*x*x]];
-Print["res1=",res1]
-Print["res2=",res2]
+	res = Func[sp, spozn, yfunc, yd];
+
+	MyVisualize[res, yfunc, First[sp], Last[sp]]
+];
 
 (*
 *)
@@ -169,36 +164,90 @@ arg1,2 = {
 		{ {1, k, m}, {2, k, m} } - upper
 	   }
 *)
-Func2 := Function[{arg1, arg2, op},
-	MyCheck[arg1[[1]], arg1[[2]], "arg1 lower and upper length must be equal"];
-	MyCheck[arg2[[1]], arg2[[2]], "arg2 lower and upper length must be equal"];
+Func2 := Function[{arg1, arg2},
+	MyCheck[Length[arg1[[1]]], Length[arg1[[2]]], "arg1 lower and upper length must be equal"];
+	MyCheck[Length[arg2[[1]]], Length[arg2[[2]]], "arg2 lower and upper length must be equal"];
 	n = Length[arg1[[1]]];
 	m = Length[arg2[[1]]];
 	MyCheck[arg1[[1]][[1]][[1]], arg2[[1]][[1]][[1]], "lower.start"];
 	MyCheck[arg1[[2]][[1]][[1]], arg2[[2]][[1]][[1]], "upper.start"];
 	MyCheck[arg1[[1]][[n]][[1]], arg2[[1]][[m]][[1]], "lower.end"];
 	MyCheck[arg1[[2]][[n]][[1]], arg2[[2]][[m]][[1]], "upper.end"];
-	a1 = {};
-	a2 = {};
-	i = 1;
-	j = 1;
-	While[i<=n || j<=m,
-		i++;
-		j++;
+	res1 = {};
+	res2 = {};
+	For[lu=1, lu<=2, ++lu,
+		mas1 = {};
+		mas2 = {};
+		i = n;
+		j = m;
+		While[i>0 || j>0,
+			po1 = arg1[[lu]][[i]];
+			po2 = arg2[[lu]][[j]];
+			If[po1[[1]] == po2[[1]],
+				AppendTo[mas1, po1];
+				AppendTo[mas2, po2];
+				--i;
+				--j;
+			];
+			If[po1[[1]] > po2[[1]],
+				AppendTo[mas1, po1];
+				AppendTo[mas2, {po1[[1]], po2[[2]], po2[[3]]}];
+				--i;
+			];
+			If[po2[[1]] > po1[[1]],
+				AppendTo[mas1, {po2[[1]], po1[[2]], po1[[3]]}];
+				AppendTo[mas2, po2];
+				--j;
+			];
+		];
+		AppendTo[res1, Reverse[mas1]];
+		AppendTo[res2, Reverse[mas2]];
 	];
-	res = {};
-	res
-]
-res = Func2[res1, res2, "+"];
-Print["res=",res];
+	{ res1, res2 }
+];
 
-MakeDemo[points1, ozn1, Function[x, -Sin[x]], Function[x, -Cos[x]]]
-MakeDemo[points2, ozn2, Function[x, x*x*x], Function[x, 3*x*x]]
+(*
+Plus
+*)
+MyPlus := Function[{arg1, arg2}, arg1];
+
+MyPrint := Function[{title, arg}, 
+	Print[title];
+	Print["lower: ", arg[[1]]];
+	Print["upper: ", arg[[2]]];
+];
+
+points1 = {-Pi, 0, Pi, 2*Pi};
+ozn1 = {1, -1, 1};
+func1 := Function[x, -Sin[x]];
+func1d := Function[x, -Cos[x]];
+
+points2 = {-Pi, 0, 2*Pi};
+ozn2 = {1,-1};
+func2 := Function[x, x*x*x];
+func2d := Function[x, 3*x*x];
+
+res1 = Func[points1, ozn1, func1, func1d];
+res2 = Func[points2, ozn2, Function[x, x*x*x], Function[x, 3*x*x]];
+MyPrint["res1", res1]
+MyPrint["res2", res2]
+res = Func2[res1, res2];
+
+MyPrint["res1 now", res[[1]]];
+(*MyPrint["res2 now", res[[2]]];
+*)
+MyVisualize[res[[1]], func1, -Pi, 2*Pi]
+
+MakeDemo[points1, ozn1, func1, func1d]
+MakeDemo[points2, ozn2, func2, func2d]
 
 Plot[(x*x*x/20 - 5*Sin[x]), {x, -Pi, 2*Pi}]
 (*
 Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
 *)
+
+
+
 
 
 
