@@ -122,8 +122,8 @@ Func := Function[{sp, spozn, y, yd},
 			];
 		
 	];
-	AppendTo[lower, {Last[sp], 0, 0}];
-	AppendTo[upper, {Last[sp], 0, 0}];
+	AppendTo[lower, {Last[sp], lower[[Length[lower]]][[2]], lower[[Length[lower]]][[3]]}];
+	AppendTo[upper, {Last[sp], upper[[Length[upper]]][[2]], upper[[Length[upper]]][[3]]}];
 	{lower, upper}
 ];
 
@@ -140,8 +140,16 @@ MyVisualize := Function[{res, y, le, ri},
 	
 	lo[x_] := Piecewise[lowerSegments];
 	up[x_] := Piecewise[upperSegments];
-	
-	Plot[{lo[x], up[x], y[x]}, {x, le, ri}]
+	pointDots = {};
+	For[lu=1, lu<=2, ++lu, 
+	For[i=1,i<=Length[lowerNodes],++i,
+		px = res[[lu]][[i]][[1]];
+		k = res[[lu]][[i]][[2]];
+		m = res[[lu]][[i]][[3]];
+		AppendTo[pointDots, {px, k*px+m}];
+	];
+	];
+	Plot[{lo[x], up[x], y[x]}, {x, le, ri}, Epilog -> {Red, PointSize@Medium, Point[pointDots]}]
 ];
 
 MakeDemo := Function[{sp, spozn, yfunc, yd},
@@ -207,9 +215,28 @@ Func2 := Function[{arg1, arg2},
 ];
 
 (*
-Plus
+BiFunc
 *)
-MyPlus := Function[{arg1, arg2}, arg1];
+MyBiFunc := Function[{arg1, arg2, func}, 
+	MyPrint["arg1", arg2];
+	MyCheck[Length[arg1[[1]]], Length[arg1[[2]]], "arg1 lower and upper length must be equal"];
+	MyCheck[Length[arg2[[1]]], Length[arg2[[2]]], "arg2 lower and upper length must be equal"];
+	MyCheck[Length[arg1[[1]]], Length[arg2[[1]]], "arg1 length != arg2 length, must be equal"];
+	result = {};
+	For[lu=1, lu<=2, ++lu,
+		mas = {};
+		For[i=1, i<=Length[arg1[[lu]]], ++i,
+		    po1 = arg1[[lu]][[i]];
+			xq = po1[[1]];
+			If[xq != arg2[[lu]][[i]][[1]], Throw["arg1.x != arg2.x"]];
+			k = func[arg1[[lu]][[i]][[2]], arg2[[lu]][[i]][[2]]];
+			m = func[arg1[[lu]][[i]][[3]], arg2[[lu]][[i]][[3]]];
+			AppendTo[mas, {xq, k, m}];
+		];
+		AppendTo[result, mas];
+	];
+	result
+];
 
 MyPrint := Function[{title, arg}, 
 	Print[title];
@@ -229,14 +256,30 @@ func2d := Function[x, 3*x*x];
 
 res1 = Func[points1, ozn1, func1, func1d];
 res2 = Func[points2, ozn2, Function[x, x*x*x], Function[x, 3*x*x]];
+(*
 MyPrint["res1", res1]
 MyPrint["res2", res2]
-res = Func2[res1, res2];
-
-MyPrint["res1 now", res[[1]]];
-(*MyPrint["res2 now", res[[2]]];
 *)
+res = Func2[res1, res2];
+(*
+MyPrint["res1 now", res[[1]]];
+MyPrint["res2 now", res[[2]]];
+*)
+
+plusFunc := Function[{a,b}, a+b];
+minusFunc := Function[{a,b}, a-b];
+
+myPlusFunc[x_, y_] := MyBiFunc[x, y, plusFunc];
+myMinusFunc[x_, y_] := MyBiFunc[x, y, minusFunc];
+
+plus = myPlusFunc[res[[1]], res[[2]]];
+MyVisualize[plus, Function[x, plusFunc[func1[x], func2[x]]], -Pi, 2*Pi]
+
+minus = myMinusFunc[res[[1]], res[[2]]];
+MyVisualize[minus, Function[x, minusFunc[func1[x], func2[x]]], -Pi, 2*Pi]
+
 MyVisualize[res[[1]], func1, -Pi, 2*Pi]
+MyVisualize[res[[2]], func2, -Pi, 2*Pi]
 
 MakeDemo[points1, ozn1, func1, func1d]
 MakeDemo[points2, ozn2, func2, func2d]
