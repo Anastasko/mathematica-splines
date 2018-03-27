@@ -238,11 +238,34 @@ MyBiFunc := Function[{arg1, arg2, func},
 	result
 ];
 
+(*
+*)
 MyPrint := Function[{title, arg}, 
 	Print[title];
 	Print["lower: ", arg[[1]]];
 	Print["upper: ", arg[[2]]];
 ];
+
+AddZeroes := Function[arg,
+	arrayWithZeroes = {};
+	n = Length[arg];
+	For[i=1, i<=n-1, ++i,
+		AppendTo[arrayWithZeroes, arg[[i]]];
+		x1 = arg[[i]][[1]];
+		k = arg[[i]][[2]];
+		m = arg[[i]][[3]];
+		x2 = arg[[i+1]][[1]];
+		If[(k*x1+m)*(k*x2+m)<0,
+			p = LinesIntersection[{0,0}, {k,m}];
+			AppendTo[arrayWithZeroes, {p[[1]], k, m}];
+			Print["point f", p];
+		];
+	];
+	AppendTo[arrayWithZeroes, arg[[Length[arg]]]];
+	arrayWithZeroes
+];
+
+Print["www", AddZeroes[{{-1,1,0},{1,-1,1},{4,1,1}}]];
 
 points1 = {-Pi, 0, Pi, 2*Pi};
 ozn1 = {1, -1, 1};
@@ -268,9 +291,13 @@ MyPrint["res2 now", res[[2]]];
 
 plusFunc := Function[{a,b}, a+b];
 minusFunc := Function[{a,b}, a-b];
+multFunc := Function[{a,b}, a*b];
 
 myPlusFunc[x_, y_] := MyBiFunc[x, y, plusFunc];
 myMinusFunc[x_, y_] := MyBiFunc[x, y, minusFunc];
+
+plus = myPlusFunc[res[[1]], res[[2]]];
+MyVisualize[plus, Function[x, multFunc[func1[x], func2[x]]], -Pi, 2*Pi]
 
 plus = myPlusFunc[res[[1]], res[[2]]];
 MyVisualize[plus, Function[x, plusFunc[func1[x], func2[x]]], -Pi, 2*Pi]
@@ -288,15 +315,6 @@ Plot[(x*x*x/20 - 5*Sin[x]), {x, -Pi, 2*Pi}]
 (*
 Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
 *)
-
-
-
-
-
-
-
-
-
 
 
 
