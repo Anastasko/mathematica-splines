@@ -171,7 +171,9 @@ arg1,2 = {
 		{ {1, k, m}, {2, k, m} } - lower , 
 		{ {1, k, m}, {2, k, m} } - upper
 	   }
-*)
+	   \:043d\:0430 \:0432\:0445\:0456\:0434 \:0434\:0432\:0430 \:0444\:0443\:043d\:043a\:0446\:0456\:043e\:043d\:0430\:043b\:044c\:043d\:0438\:0445 \:0440\:043e\:0437\:0448\:0438\:0440\:0435\:043d\:043d\:044f
+	   \:043d\:0430 \:0432\:0438\:0445\:0456\:0434 \:0442\:0456 \:0436 2 \:0440\:043e\:0437\:0448\:0438\:0440\:0435\:043d\:043d\:044f \:0437 \:043a\:043e\:043c\:0431\:0456\:043d\:043e\:0432\:0430\:043d\:0438\:043c\:0438 \:0442\:043e\:0447\:043a\:0430\:043c\:0438 x
+*)\.10
 Func2 := Function[{arg1, arg2},
 	MyCheck[Length[arg1[[1]]], Length[arg1[[2]]], "arg1 lower and upper length must be equal"];
 	MyCheck[Length[arg2[[1]]], Length[arg2[[2]]], "arg2 lower and upper length must be equal"];
@@ -215,10 +217,49 @@ Func2 := Function[{arg1, arg2},
 ];
 
 (*
+arg = { 
+		{ {1, k, m}, {2, k, m} } - lower , 
+		{ {1, k, m}, {2, k, m} } - upper
+	   }
+	   \:043d\:0430 \:0432\:0445\:0456\:0434 \:043e\:0434\:043d\:0435 \:0444\:0443\:043d\:043a\:0446\:0456\:043e\:043d\:0430\:043b\:044c\:043d\:0435 \:0440\:043e\:0437\:0448\:0438\:0440\:0435\:043d\:043d\:044f
+	   \:043d\:0430 \:0432\:0438\:0445\:0456\:0434 \:0442\:0435 \:0436 \:0440\:043e\:0437\:0448\:0438\:0440\:0435\:043d\:043d\:044f \:0437 \:043a\:043e\:043c\:0431\:0456\:043d\:043e\:0432\:0430\:043d\:0438\:043c\:0438 \:0442\:043e\:0447\:043a\:0430\:043c\:0438 x
+*)\.10
+Func1 := Function[arg,
+	n = Length[arg[[1]]];
+	m = Length[arg[[2]]];
+	
+		mas1 = {};
+		mas2 = {};
+		i = n;
+		j = m;
+		While[i>0 || j>0,
+			po1 = arg[[1]][[i]];
+			po2 = arg[[2]][[j]];
+			If[po1[[1]] == po2[[1]],
+				AppendTo[mas1, po1];
+				AppendTo[mas2, po2];
+				--i;
+				--j;
+			];
+			If[po1[[1]] > po2[[1]],
+				AppendTo[mas1, po1];
+				AppendTo[mas2, {po1[[1]], po2[[2]], po2[[3]]}];
+				--i;
+			];
+			If[po2[[1]] > po1[[1]],
+				AppendTo[mas1, {po2[[1]], po1[[2]], po1[[3]]}];
+				AppendTo[mas2, po2];
+				--j;
+			];
+		];
+	
+	{ Reverse[mas1], Reverse[mas2] }
+];
+
+(*
 BiFunc
 *)
 MyBiFunc := Function[{arg1, arg2, func}, 
-	MyPrint["arg1", arg2];
 	MyCheck[Length[arg1[[1]]], Length[arg1[[2]]], "arg1 lower and upper length must be equal"];
 	MyCheck[Length[arg2[[1]]], Length[arg2[[2]]], "arg2 lower and upper length must be equal"];
 	MyCheck[Length[arg1[[1]]], Length[arg2[[1]]], "arg1 length != arg2 length, must be equal"];
@@ -256,16 +297,87 @@ AddZeroes := Function[arg,
 		m = arg[[i]][[3]];
 		x2 = arg[[i+1]][[1]];
 		If[(k*x1+m)*(k*x2+m)<0,
-			p = LinesIntersection[{0,0}, {k,m}];
+			p = LinesIntersection[{0,0}, {k, m}];
 			AppendTo[arrayWithZeroes, {p[[1]], k, m}];
-			Print["point f", p];
 		];
 	];
 	AppendTo[arrayWithZeroes, arg[[Length[arg]]]];
 	arrayWithZeroes
 ];
 
-Print["www", AddZeroes[{{-1,1,0},{1,-1,1},{4,1,1}}]];
+MyMultFunc := Function[{farg, garg},
+	temp1 = Func1[{AddZeroes[farg[[1]]], AddZeroes[farg[[2]]]}];
+	temp2 = Func1[{AddZeroes[garg[[1]]], AddZeroes[garg[[2]]]}];
+	aa = Func2[temp1, temp2];
+	f = aa[[1]];
+	g = aa[[2]];
+	MyCheck[Length[f[[1]]], Length[g[[1]]], "@MyMult, Length[f[[1]]] != Length[g[[1]]]"];
+	n = Length[f[[1]]];
+	resUpper = {};
+	resLower = {};
+	For[i=1, i<n, ++i,
+        fil = f[[1]][[i]];
+	    fiu = f[[2]][[i]];
+	    gil = g[[1]][[i]];
+	    giu = g[[2]][[i]];
+	    glk = gil[[2]];
+	    glm = gil[[3]];
+	    guk = giu[[2]];
+	    gum = giu[[3]];
+	    flk = fil[[2]];
+	    flm = fil[[3]];
+	    fuk = fiu[[2]];
+	    fum = fiu[[3]];
+	    x1 = fil[[1]];
+	    x2 = f[[1]][[i+1]][[1]];
+	    gLowerMin = Min[glk*x1+glm, glk*x2+glm];
+	    fLowerMin = Min[flk*x1+flm, flk*x2+flm];
+	    gUpperMax = Max[guk*x1+gum, guk*x2+gum];
+	    fUpperMax = Max[fuk*x1+fum, fuk*x2+fum];
+	    
+	    If[0 <= fLowerMin && 0 <= gLowerMin,
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	    If[fUpperMax <= 0 && 0 <= gLowerMin,
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	    If[(fUpperMax > 0 && 0 > fLowerMin) && 0 <= gLowerMin,
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	   
+	   If[0 <= fLowerMin && 0 >= gUpperMax,
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	    If[fUpperMax <= 0 && 0 >= gUpperMax,
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	    If[(fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax,
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	   
+	   If[0 <= fLowerMin && (gUpperMax > 0 && 0 > gLowerMin),
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	    If[fUpperMax <= 0 && (gUpperMax > 0 && 0 > gLowerMin),
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	   If[(fUpperMax > 0 && 0 > fLowerMin) && (gUpperMax > 0 && 0 > gLowerMin),
+	       AppendTo[resLower, {x1, 1, -x1}];
+	       AppendTo[resUpper, {x1, 1, -x1}];
+	   ];
+	];
+	AppendTo[resLower, {Last[f[[1]]][[1]], 0, 0}];
+	AppendTo[resUpper, {Last[f[[1]]][[1]], 0, 0}];
+	{ resLower, resUpper }
+];
 
 points1 = {-Pi, 0, Pi, 2*Pi};
 ozn1 = {1, -1, 1};
@@ -296,8 +408,8 @@ multFunc := Function[{a,b}, a*b];
 myPlusFunc[x_, y_] := MyBiFunc[x, y, plusFunc];
 myMinusFunc[x_, y_] := MyBiFunc[x, y, minusFunc];
 
-plus = myPlusFunc[res[[1]], res[[2]]];
-MyVisualize[plus, Function[x, multFunc[func1[x], func2[x]]], -Pi, 2*Pi]
+mult = MyMultFunc[res[[1]], res[[2]]];
+MyVisualize[mult, Function[x, multFunc[func1[x], func2[x]]], -Pi, 2*Pi]
 
 plus = myPlusFunc[res[[1]], res[[2]]];
 MyVisualize[plus, Function[x, plusFunc[func1[x], func2[x]]], -Pi, 2*Pi]
@@ -315,6 +427,15 @@ Plot[(x*x*x/20 - 5*Sin[x]), {x, -Pi, 2*Pi}]
 (*
 Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
 *)
+
+
+
+
+
+
+
+
+
 
 
 
