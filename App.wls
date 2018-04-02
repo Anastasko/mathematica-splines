@@ -336,51 +336,51 @@ MyMultFunc := Function[{farg, garg},
 	    fUpperMax = Max[fuk*x1+fum, fuk*x2+fum];
 	    
 	    If[0 <= fLowerMin && 0 <= gLowerMin,
-	       Print["11"];
-	       AppendTo[resLower, MyCombine[fil, gil]];
-	       AppendTo[resUpper, MyCombine[fiu, giu]];
+	       Print["go 11"];
+	       resLower = Join[resLower, MyCombine[fil, gil]];
+	       resUpper = Join[resUpper, MyCombine[fiu, giu]];
 	   ];
 	    If[fUpperMax <= 0 && 0 <= gLowerMin,
-	       Print["21"];
-	       AppendTo[resLower, MyCombine[fil, giu]];
-	       AppendTo[resUpper, MyCombine[fiu, gil]];
+	       Print["go 21"];
+	       resLower = Join[resLower, MyCombine[fil, giu]];
+	       resUpper = Join[resUpper, MyCombine[fiu, gil]];
 	   ];
 	    If[(fUpperMax > 0 && 0 > fLowerMin) && 0 <= gLowerMin,
-	       Print["31"];
-	       AppendTo[resLower, MyCombine[fil, giu]];
-	       AppendTo[resUpper, MyCombine[fiu, giu]];
+	       Print["go 31"];
+	       resLower = Join[resLower, MyCombine[fil, giu]];
+	       resUpper = Join[resUpper, MyCombine[fiu, giu]];
 	   ];
 	   
 	   If[0 <= fLowerMin && 0 >= gUpperMax,
-	       Print["12"];
-	       AppendTo[resLower, MyCombine[fiu, gil]];
-	       AppendTo[resUpper, MyCombine[fil, giu]];
+	       Print["go 12"];
+	       resLower = Join[resLower, MyCombine[fiu, gil]];
+	       resUpper = Join[resUpper, MyCombine[fil, giu]];
 	   ];
 	   If[fUpperMax <= 0 && 0 >= gUpperMax,
-	       Print["22"];
-	       AppendTo[resLower, MyCombine[fiu, giu]];
-	       AppendTo[resUpper, MyCombine[fil, gil]];
+	       Print["go 22"];
+	       resLower = Join[resLower, MyCombine[fiu, giu]];
+	       resUpper = Join[resUpper, MyCombine[fil, gil]];
 	   ];
 	   If[(fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax,
-	       Print["32"];
-	       AppendTo[resLower, MyCombine[fiu, gil]];
-	       AppendTo[resUpper, MyCombine[fil, gil]];
+	       Print["go 32"];
+	       resLower = Join[resLower, MyCombine[fiu, gil]];
+	       resUpper = Join[resUpper, MyCombine[fil, gil]];
 	   ];
 	   
 	   If[0 <= fLowerMin && (gUpperMax > 0 && 0 > gLowerMin),
-	       Print["13"];
-	       AppendTo[resLower, MyCombine[fiu, gil]];
-	       AppendTo[resUpper, MyCombine[fiu, giu]];
+	       Print["go 13"];
+	       resLower = Join[resLower, MyCombine[fiu, gil]];
+	       resUpper = Join[resUpper, MyCombine[fiu, giu]];
 	   ];
 	    If[fUpperMax <= 0 && (gUpperMax > 0 && 0 > gLowerMin),
-	       Print["23"];
-	       AppendTo[resLower, MyCombine[fil, giu]];
-	       AppendTo[resUpper, MyCombine[fil, gil]];
+	       Print["go 23"];
+	       resLower = Join[resLower, MyCombine[fil, giu]];
+	       resUpper = Join[resUpper, MyCombine[fil, gil]];
 	   ];
 	   If[(fUpperMax > 0 && 0 > fLowerMin) && (gUpperMax > 0 && 0 > gLowerMin),
-	       Print["33"];
-	       AppendTo[resLower, MyCombine2[fil, fiu, gil, giu]];
-	       AppendTo[resUpper, MyCombine2[fil, fiu, gil, giu]];
+	       Print["go 33"];
+	       resLower = Join[resLower, MyCombine2[fil, fiu, gil, giu]];
+	       resUpper = Join[resUpper, MyCombine2[fil, fiu, gil, giu]];
 	   ];
 	];
 	AppendTo[resLower, {Last[f[[1]]][[1]], 0, 0}];
@@ -392,8 +392,14 @@ MyCombine2 := Function[{fl, fu, gl, gu},
 	{fl[[1]], 1, -fl[[1]]}
 ];
 
-MyCombine := Function[{f, g}, 
-	{f[[1]], 1, -f[[1]]}
+MyCombine := Function[{f, g},
+	MyCheck[Length[f], 3, "f.length != 3"];
+	MyCheck[Length[g], 3, "g.length != 3"];
+	myCombineRes = Null;
+	If[myCombineRes == Null && f[[2]] == 0, myCombineRes = {{g[[1]], g[[2]]*f[[3]], g[[3]]*f[[3]]}}];
+	If[myCombineRes == Null && g[[2]] == 0, myCombineRes = {{f[[1]], f[[2]]*g[[3]], f[[3]]*g[[3]]}}];
+	If[myCombineRes == Null, myCombineRes = {{f[[1]], -10, 10*f[[1]]}}];
+	myCombineRes
 ];
 
 points1 = {-Pi, 0, Pi, 2*Pi};
@@ -427,13 +433,13 @@ myMinusFunc[x_, y_] := MyBiFunc[x, y, minusFunc];
 
 mult = MyMultFunc[res[[1]], res[[2]]];
 MyVisualize[mult, Function[x, multFunc[func1[x], func2[x]]], -Pi, 2*Pi]
-
+(*
 plus = myPlusFunc[res[[1]], res[[2]]];
 MyVisualize[plus, Function[x, plusFunc[func1[x], func2[x]]], -Pi, 2*Pi]
 
 minus = myMinusFunc[res[[1]], res[[2]]];
 MyVisualize[minus, Function[x, minusFunc[func1[x], func2[x]]], -Pi, 2*Pi]
-
+*)
 MyVisualize[res[[1]], func1, -Pi, 2*Pi]
 MyVisualize[res[[2]], func2, -Pi, 2*Pi]
 
