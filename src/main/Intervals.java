@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class Intervals {
 
@@ -14,12 +16,37 @@ public class Intervals {
 		return list.size();
 	}
 	
-	public Intervals add(Intervals intervals) {
+	public Intervals plus(Intervals intervals) {
 		return biFunc(intervals, (a,b) -> a+b);
 	}
 	
 	public Intervals minus(Intervals intervals) {
 		return biFunc(intervals, (a,b) -> a-b);
+	}
+	
+	public Intervals div(double x) {
+		return unoFunc(a -> a/x);
+	}
+	
+	public Intervals mult(double x) {
+		return unoFunc(a -> a*x);
+	}
+	
+	private Intervals unoFunc(Function<Double, Double> unoFunc) {
+		Intervals res = new Intervals();
+		forEach(i -> {
+			Line lower = new Line(
+					unoFunc.apply(i.getLower().getK()),
+					unoFunc.apply(i.getLower().getM()));
+			
+			Line upper = new Line(
+					unoFunc.apply(i.getUpper().getK()),
+					unoFunc.apply(i.getUpper().getM()));
+			
+			res.add(new LineInterval(i.getX(), lower, upper));
+		
+		});
+		return res;
 	}
 	
 	private Intervals biFunc(Intervals intervals, BiFunction<Double, Double, Double> biFunc) {
@@ -102,6 +129,10 @@ public class Intervals {
 	@Override
 	public String toString() {
 		return "Intervals " + list;
+	}
+
+	public void forEach(Consumer<LineInterval> consumer) {
+		list.forEach(consumer);
 	}
 	
 	
