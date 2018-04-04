@@ -8,6 +8,9 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import main.task1.Func;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 public class Intervals extends Utils {
 
 	private List<LineInterval> lower = new ArrayList<>();
@@ -41,65 +44,85 @@ public class Intervals extends Utils {
 	public Intervals mult(Intervals intervals) {
 		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
 		Intervals res = new Intervals();
-//		for(int i=0; i<pair.getOne().size(); ++i) {
-//			
-//			LineInterval f = pair.getOne().get(i);
-//			LineInterval g = pair.getTwo().get(i);
-//			
-//			double x1 = f.getX1();
-//			double x2 = f.getX2();
-//			
-//			double gLowerMin = Math.min(g.getLower().at(x1), g.getLower().at(x2));
-//			double fLowerMin = Math.min(f.getLower().at(x1), f.getLower().at(x2));
-//			double gUpperMax = Math.max(g.getUpper().at(x1), g.getUpper().at(x2));
-//			double fUpperMax = Math.max(f.getUpper().at(x1), f.getUpper().at(x2));
-//
-//			if (0 <= fLowerMin && 0 <= gLowerMin) {
-//				res.addAll(combine(f.getLower(), g.getLower(), f.getUpper(), g.getUpper(), x1, x2));
-//			}
-//			if (fUpperMax <= 0 && 0 <= gLowerMin) {
-//				res.addAll(combine(f.getLower(), g.getUpper(), f.getUpper(), g.getLower(), x1, x2));
-//			}
-//			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 <= gLowerMin) {
-//				res.addAll(combine(f.getLower(), g.getUpper(), f.getUpper(), g.getUpper(), x1, x2));
-//			}
-//
-//			if (0 <= fLowerMin && 0 >= gUpperMax) {
-//				res.addAll(combine(f.getUpper(), g.getLower(), f.getLower(), g.getUpper(), x1, x2));
-//			}
-//			if (fUpperMax <= 0 && 0 >= gUpperMax) {
-//				res.addAll(combine(f.getUpper(), g.getUpper(), f.getLower(), g.getLower(), x1, x2));
-//			}
-//			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax) {
-//				res.addAll(combine(f.getUpper(), g.getLower(), f.getLower(), g.getLower(), x1, x2));
-//			}
-//
-//			if (0 <= fLowerMin && (gUpperMax > 0 && 0 > gLowerMin)) {
-//				res.addAll(combine(f.getUpper(), g.getLower(), f.getUpper(), g.getUpper(), x1, x2));
-//			}
-//			if (fUpperMax <= 0 && (gUpperMax > 0 && 0 > gLowerMin)) {
-//				res.addAll(combine(f.getLower(), g.getUpper(), f.getLower(), g.getLower(), x1, x2));
-//			}
-//			if ((fUpperMax > 0 && 0 > fLowerMin) && (gUpperMax > 0 && 0 > gLowerMin)) {
-//				throw new NotImplementedException();
-//				// res.addAll(combine2(f,g));
-//			}
-//		}
+		biForEach(pair).forEach((f,g) -> {
+			
+			double x1 = f.getX1();
+			double x2 = f.getX2();
+			
+			double gLowerMin = Math.min(g.getLower().at(x1), g.getLower().at(x2));
+			double fLowerMin = Math.min(f.getLower().at(x1), f.getLower().at(x2));
+			double gUpperMax = Math.max(g.getUpper().at(x1), g.getUpper().at(x2));
+			double fUpperMax = Math.max(f.getUpper().at(x1), f.getUpper().at(x2));
+
+			if (0 <= fLowerMin && 0 <= gLowerMin) {
+				res.addAllLower(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
+			}
+			if (fUpperMax <= 0 && 0 <= gLowerMin) {
+				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getUpper()));
+			}
+			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 <= gLowerMin) {
+				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
+			}
+
+			if (0 <= fLowerMin && 0 >= gUpperMax) {
+				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getUpper()));
+			}
+			if (fUpperMax <= 0 && 0 >= gUpperMax) {
+				res.addAllLower(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
+			}
+			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax) {
+				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
+			}
+
+			if (0 <= fLowerMin && (gUpperMax > 0 && 0 > gLowerMin)) {
+				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
+			}
+			if (fUpperMax <= 0 && (gUpperMax > 0 && 0 > gLowerMin)) {
+				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
+			}
+			if ((fUpperMax > 0 && 0 > fLowerMin) && (gUpperMax > 0 && 0 > gLowerMin)) {
+				throw new NotImplementedException();
+				// res.addAll(combine2(f,g));
+			}
+		});
 		return res;
 	}
 	
-	private Collection<LineInterval> combine(Line lower1, Line lower2, Line upper1, Line upper2, double x1, double x2) {
-		
-		return null;
+	private Collection<LineInterval> combine(Line l1, Line l2, double x1, double x2, Function<Intervals, List<LineInterval>> lu) {
+		if (equals(l1.getK(), 0)) {
+			return list(new LineInterval(x1, x2, l2.unoFunc(x -> x*l1.getM())));
+		}
+		if (equals(l2.getK(), 0)) {
+			return list(new LineInterval(x1, x2, l1.unoFunc(x -> x*l2.getM())));
+		}
+		return lu.apply(Func.func(
+				list(x1, x2),
+				list(l1.getK() * l2.getK()),
+				
+				x -> l1.getK() * l2.getK() * x * x + 
+					 l1.getK() * l2.getM() * x +
+					 l1.getM() * l2.getK() * x +
+					 l1.getM() * l2.getM(),
+					 
+				x -> 2 * l1.getK() * l2.getK() * x +
+				     l1.getK() * l2.getM() +
+				     l1.getM() * l2.getK()
+			));
 	}
 
 	private Intervals unoFunc(Function<Double, Double> unoFunc) {
 		Intervals res = new Intervals();
 		lowerUpper(lu -> {
 			lu.apply(this).forEach(i -> {
-				Line line = new Line(
-						unoFunc.apply(i.getLine().getK()),
-						unoFunc.apply(i.getLine().getM()));
+				Line line = i.getLine().unoFunc(unoFunc);
 				lu.apply(res).add(new LineInterval(i.getX1(), i.getX2(), line));
 			});
 		});
@@ -126,6 +149,21 @@ public class Intervals extends Utils {
 		List<LineInterval> list1 = lu.apply(pair.getOne());
 		List<LineInterval> list2 = lu.apply(pair.getTwo());
 		return new BiIterable<LineInterval>(list1, list2);
+	}
+	
+	private BiIterable<LinesInterval> biForEach(Pair<Intervals, Intervals> pair) {
+		List<LinesInterval> list1 = intervals(pair.getOne());
+		List<LinesInterval> list2 = intervals(pair.getTwo());
+		return new BiIterable<LinesInterval>(list1, list2);
+	}
+
+	private List<LinesInterval> intervals(Intervals one) {
+		BiIterable<LineInterval> iterable = new BiIterable<>(one.getLower(), one.getUpper());
+		List<LinesInterval> res = new ArrayList<>();
+		iterable.forEach((lower, upper) -> {
+			res.add(new LinesInterval(lower.getX1(), lower.getX2(), lower.getLine(), upper.getLine()));
+		});
+		return res;
 	}
 
 	/**

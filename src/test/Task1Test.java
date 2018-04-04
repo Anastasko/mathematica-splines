@@ -39,7 +39,7 @@ public class Task1Test {
 		output("x^3 div 20 - 5sin", is1.mult(5).plus(is2.div(20)));
 	}
 
-//	@Test
+	@Test
 	public void testSampleTimes() {
 		Sample s1 = Samples.getSample1();
 		Sample s2 = Samples.getSample2();

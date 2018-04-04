@@ -11,7 +11,7 @@ public class BiIterable<T> {
 
 	public BiIterable(List<T> list1, List<T> list2) {
 		if (list1.size() != list2.size()) {
-			throw new MyException("biiterable requires lists of the same length");
+			throw new MyException("bilist requires lists of the same length");
 		}
 		this.list1 = list1;
 		this.list2 = list2;

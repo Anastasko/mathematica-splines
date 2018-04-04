@@ -1,5 +1,7 @@
 package main;
 
+import java.util.function.Function;
+
 public class Line {
 	
 	private double k;
@@ -46,6 +48,9 @@ public class Line {
 	public double at(double x) {
 		return k*x + m;
 	}
-	
 
+	public Line unoFunc(Function<Double, Double> unoFunc) {
+		return new Line(unoFunc.apply(k), unoFunc.apply(m));
+	}
+	
 }
