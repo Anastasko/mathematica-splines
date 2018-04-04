@@ -16,5 +16,17 @@ public class Utils {
 		consumer.accept(x -> x.getLower());
 		consumer.accept(x -> x.getUpper());
 	}
+	
+	public static boolean less(double x, double x2) {
+		return x + Const.EPS < x2;
+	}
+
+	public static boolean equals(double x, double x2) {
+		return Math.abs(x2-x) < Const.EPS;
+	}
+	
+	public static void print(Object o) {
+		System.out.println(o);
+	}
 
 }

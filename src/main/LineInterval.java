@@ -19,7 +19,7 @@ public class LineInterval extends Interval {
 
 	@Override
 	public String toString() {
-		return "\n" + getX1() + ", " + line;
+		return "\n[" + getX1() + ", " + getX2() + "] " + ", " + line;
 	}
 
 	public Point getIntersectZero() {
@@ -31,6 +31,10 @@ public class LineInterval extends Interval {
 
 	private double sign(Line line) {
 		return line.at(getX1()) * line.at(getX2());
+	}
+
+	public LineInterval withX2(double x2) {
+		return withX(getX1(), x2);
 	}
 	
 }

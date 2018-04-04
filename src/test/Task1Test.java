@@ -10,6 +10,7 @@ import org.junit.Test;
 import main.Intervals;
 import main.LineInterval;
 import main.MyException;
+import main.Utils;
 import main.task1.Func;
 import main.task1.Sample;
 import main.task1.Samples;
@@ -51,9 +52,21 @@ public class Task1Test {
 	private static final String filePath = "/Users/lorry/data/";
 
 	private void output(String name, Intervals intervals) {
+		validate(intervals.getLower());
+		validate(intervals.getUpper());
 		write(intervals.getLower(), filePath + name + "-lower");
 		write(intervals.getUpper(), filePath + name + "-upper");
 		System.out.println(name);
+	}
+
+	private void validate(List<LineInterval> list) {
+		for(int i=1; i<list.size(); ++i) {
+			double p = list.get(i).getX1();
+			double pp = list.get(i-1).getX1();
+			if (Utils.less(p, pp)) {
+				throw new MyException(p + " < " + pp);
+			}
+		}
 	}
 
 	private void write(List<LineInterval> list, String fileName) {

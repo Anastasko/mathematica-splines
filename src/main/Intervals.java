@@ -42,12 +42,17 @@ public class Intervals extends Utils {
 	}
 	
 	public Intervals mult(Intervals intervals) {
+		print(this.addZeroes().getLower());
+		print(intervals.addZeroes().getLower());
 		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
+		print(pair.getOne().getLower());
 		Intervals res = new Intervals();
 		biForEach(pair).forEach((f,g) -> {
 			
 			double x1 = f.getX1();
 			double x2 = f.getX2();
+			
+			print(x1 + " " + x2);
 			
 			double gLowerMin = Math.min(g.getLower().at(x1), g.getLower().at(x2));
 			double fLowerMin = Math.min(f.getLower().at(x1), f.getLower().at(x2));
@@ -95,8 +100,8 @@ public class Intervals extends Utils {
 		});
 		return res;
 	}
-	
-	private Collection<LineInterval> combine(Line l1, Line l2, double x1, double x2, Function<Intervals, List<LineInterval>> lu) {
+
+	private List<LineInterval> combine(Line l1, Line l2, double x1, double x2, Function<Intervals, List<LineInterval>> lu) {
 		if (equals(l1.getK(), 0)) {
 			return list(new LineInterval(x1, x2, l2.unoFunc(x -> x*l1.getM())));
 		}
@@ -178,21 +183,25 @@ public class Intervals extends Utils {
 			List<LineInterval> b = lu.apply(B);
 			int i = a.size() - 1;
 			int j = b.size() - 1;
+			double prev = a.get(i).getX2();
 			while (i >= 0 || j >= 0) {
 				LineInterval i1 = a.get(i);
 				LineInterval i2 = b.get(j);
 				if (equals(i1.getX1(), i2.getX1())) {
-					lu.apply(one).add(i1);
-					lu.apply(two).add(i2);
+					lu.apply(one).add(i1.withX2(prev));
+					lu.apply(two).add(i2.withX2(prev));
+					prev = i1.getX1();
 					--i;
 					--j;
 				} else if (less(i1.getX1(), i2.getX1())) {
-					lu.apply(one).add(i1.withX(i2.getX1(), i2.getX2()));
-					lu.apply(two).add(i2);
+					lu.apply(one).add(i1.withX(i2.getX1(), prev));
+					lu.apply(two).add(i2.withX2(prev));
+					prev = i2.getX1();
 					--j;
 				} else {
-					lu.apply(one).add(i1);
-					lu.apply(two).add(i2.withX(i1.getX1(), i1.getX2()));
+					lu.apply(one).add(i1.withX2(prev));
+					lu.apply(two).add(i2.withX(i1.getX1(), prev));
+					prev = i1.getX1();
 					--i;
 				}
 			}
@@ -227,7 +236,10 @@ public class Intervals extends Utils {
 		lower.add(i);
 	}
 	
-	public void addAllLower(Collection<LineInterval> i) {
+	public void addAllLower(List<LineInterval> i) {
+		if (lower.size() > 0 && i.get(0).getX1() < lower.get(lower.size()-1).getX1()) {
+			//throw new MyException("how");
+		}
 		lower.addAll(i);
 	}
 	
@@ -242,14 +254,6 @@ public class Intervals extends Utils {
 	private void reverse() {
 		Collections.reverse(lower);
 		Collections.reverse(upper);
-	}
-
-	private static boolean less(double x, double x2) {
-		return x + Const.EPS < x2;
-	}
-
-	private static boolean equals(double x, double x2) {
-		return Math.abs(x2-x) < Const.EPS;
 	}
 
 	@Override
