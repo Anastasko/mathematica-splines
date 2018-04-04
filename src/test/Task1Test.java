@@ -38,7 +38,16 @@ public class Task1Test {
 		Sample s2 = Samples.getSample2();
 		Intervals is1 = func(s1);
 		Intervals is2 = func(s2);
-		output("test 3", is1.mult(5).plus(is2.div(20)));
+		output("x^3 div 20 - 5sin", is1.mult(5).plus(is2.div(20)));
+	}
+	
+	@Test
+	public void testSampleTimes() {
+		Sample s1 = Samples.getSample1();
+		Sample s2 = Samples.getSample2();
+		Intervals is1 = func(s1);
+		Intervals is2 = func(s2);
+		output("x^3 times -sin", is1.mult(is2));
 	}
 
 	private void output(String name, Intervals is) {
@@ -50,15 +59,17 @@ public class Task1Test {
 			PrintWriter pw1 = new PrintWriter(file);
 			
 			is.forEach(i -> {
-				pw1.println(i.getX() + " " + i.getLower().getK() + " " + i.getLower().getM());
+				pw1.println(i.getX1() + " " + i.getLower().getK() + " " + i.getLower().getM());
 			});
+			pw1.println(is.last().getX2() + " " + is.last().getLower().getK() + " " + is.last().getLower().getM());
 			pw1.close();
 		
 			file = new File(fileName+"-upper.txt");
 			PrintWriter pw2 = new PrintWriter(file);
 			is.forEach(i -> {
-				pw2.println(i.getX() + " " + i.getUpper().getK() + " " + i.getUpper().getM());
+				pw2.println(i.getX1() + " " + i.getUpper().getK() + " " + i.getUpper().getM());
 			});
+			pw2.println(is.last().getX2() + " " + is.last().getLower().getK() + " " + is.last().getLower().getM());
 			pw2.close();
 			
 		} catch (FileNotFoundException e) {

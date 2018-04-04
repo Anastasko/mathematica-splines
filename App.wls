@@ -89,7 +89,7 @@ MakeDemo := Function[{name, yfunc, sp},
 	upu = Import["data/" <> name <> "-upper.txt", "Table"];
 
 	res = {lol, upu};
-	Print[Text[Style[name, 16]]];
+	Print[Text[Style[yfunc, 16]]];
 	MyVisualize[res, yfunc, First[sp], Last[sp]]
 ];
 
@@ -250,7 +250,7 @@ MyVisualize[mult, Function[x, multFunc[func1[x], func2[x]]], -Pi, 2*Pi]
 
 MakeDemo["-sin", func1, points1]
 MakeDemo["x3", func2, points2]
-MakeDemo["test3", Function[x, x*x*x/20 - 5*Sin[x]], points1]
+MakeDemo["x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]], points1]
 
 Plot[(x*x*x/20 - 5*Sin[x]), {x, -Pi, 2*Pi}]
 (*

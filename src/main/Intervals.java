@@ -32,6 +32,13 @@ public class Intervals {
 		return unoFunc(a -> a*x);
 	}
 	
+	public Intervals mult(Intervals intervals) {
+		
+		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
+		
+		return null;
+	}
+	
 	private Intervals unoFunc(Function<Double, Double> unoFunc) {
 		Intervals res = new Intervals();
 		forEach(i -> {
@@ -43,7 +50,7 @@ public class Intervals {
 					unoFunc.apply(i.getUpper().getK()),
 					unoFunc.apply(i.getUpper().getM()));
 			
-			res.add(new LineInterval(i.getX(), lower, upper));
+			res.add(new LineInterval(i.getX1(), i.getX2(), lower, upper));
 		
 		});
 		return res;
@@ -65,7 +72,7 @@ public class Intervals {
 					biFunc.apply(i1.getUpper().getK(), i2.getUpper().getK()),
 					biFunc.apply(i1.getUpper().getM(), i2.getUpper().getM()));
 			
-			res.add(new LineInterval(i1.getX(), lower, upper));
+			res.add(new LineInterval(i1.getX1(), i1.getX2(), lower, upper));
 			++i;
 		}
 		return res;
@@ -79,18 +86,18 @@ public class Intervals {
 		while (i >= 0 || j >= 0) {
 			LineInterval i1 = a.get(i);
 			LineInterval i2 = b.get(j);
-			if (equals(i1.getX(), i2.getX())) {
+			if (equals(i1.getX1(), i2.getX1())) {
 				one.add(i1);
 				two.add(i2);
 				--i;
 				--j;
-			} else if (less(i1.getX(), i2.getX())) {
-				one.add(i1.setX(i2.getX()));
+			} else if (less(i1.getX1(), i2.getX1())) {
+				one.add(i1.setX(i2.getX1(), i2.getX2()));
 				two.add(i2);
 				--j;
 			} else {
 				one.add(i1);
-				two.add(i2.setX(i1.getX()));
+				two.add(i2.setX(i1.getX1(), i1.getX2()));
 				--i;
 			}
 		}
@@ -113,9 +120,12 @@ public class Intervals {
 	}
 	
 	private Intervals addZeroes() {
-		Intervals i = new Intervals();
-		
-		return i;
+		Intervals res = new Intervals();
+		forEach(i -> {
+			
+			
+		});
+		return res;
 	}
 
 	private boolean less(double x, double x2) {
@@ -133,6 +143,10 @@ public class Intervals {
 
 	public void forEach(Consumer<LineInterval> consumer) {
 		list.forEach(consumer);
+	}
+
+	public LineInterval last() {
+		return list.get(size()-1);
 	}
 	
 	

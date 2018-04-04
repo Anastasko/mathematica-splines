@@ -37,20 +37,15 @@ public class Func {
 			Line lineBD = Line.make(pB, pD);
 			double ozn = spozn.get(i);
 			if (ozn < 0) {
-				res.add(new LineInterval(x1, lineAC, lineAD));
-				res.add(new LineInterval(xm, lineBC, lineBD));
+				res.add(new LineInterval(x1, xm, lineAC, lineAD));
+				res.add(new LineInterval(xm, x2, lineBC, lineBD));
 			}
 			if (ozn > 0) {
-				res.add(new LineInterval(x1, lineAD, lineAC));
-				res.add(new LineInterval(xm, lineBD, lineBC));
+				res.add(new LineInterval(x1, xm, lineAD, lineAC));
+				res.add(new LineInterval(xm, x2, lineBD, lineBC));
 			}
 		}
-		res.add(new LineInterval(last(sp), new Line(0, 0), new Line(0, 0)));
 		return res;
 	}
 
-	private static double last(List<Double> sp) {
-		return sp.get(sp.size()-1);
-	}
-	
 }
