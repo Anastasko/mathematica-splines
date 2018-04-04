@@ -1,27 +1,21 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class LineInterval {
 	
 	private double x1;
 	
 	private double x2;
 	
-	private Line upper;
+	private Line line;
 	
-	private Line lower;
-	
-	public LineInterval(double x1, double x2, Line lower, Line upper) {
+	public LineInterval(double x1, double x2, Line line) {
 		this.x1 = x1;
 		this.x2 = x2;
-		this.lower = lower;
-		this.upper = upper;
+		this.line = line;
 	}
 
 	public LineInterval withX(double x1, double x2) {
-		return new LineInterval(x1, x2, lower.clone(), upper.clone());
+		return new LineInterval(x1, x2, line.clone());
 	}
 
 	public double getX1() {
@@ -32,28 +26,16 @@ public class LineInterval {
 		return x2;
 	}
 
-	public Line getUpper() {
-		return upper;
+	public Line getLine() {
+		return line;
 	}
 
-	public Line getLower() {
-		return lower;
-	}
-	
 	@Override
 	public String toString() {
-		return "\nx=" + x1 + ", \nupper=" + upper + ", \nlower=" + lower + "\n";
+		return "\n" + x1 + ", " + line;
 	}
 
-	public Point getUpperIntersectZero() {
-		return getIntersectZero(upper);
-	}
-	
-	public Point getLowerIntersectZero() {
-		return getIntersectZero(lower);
-	}
-
-	private Point getIntersectZero(Line line) {
+	public Point getIntersectZero() {
 		if (sign(line) < 0) {
 			return line.intersect(new Line(0, 0));
 		}
@@ -62,12 +44,6 @@ public class LineInterval {
 
 	private double sign(Line line) {
 		return line.at(x1) * line.at(x2);
-	}
-	
-	public static List<LineInterval> mult(LineInterval a, LineInterval b) {
-		List<LineInterval> res = new ArrayList<>();
-		
-		return res;
 	}
 	
 }

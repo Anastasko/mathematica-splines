@@ -1,7 +1,6 @@
 package main.task1;
 
-import java.util.Arrays;
-import java.util.List;
+import static main.Utils.list;
 
 public class Samples {
 
@@ -23,10 +22,6 @@ public class Samples {
 		s.y = x -> x*x*x;
 		s.yd = x -> 3*x*x;
 		return s;
-	}
-	
-	private static List<Double> list(Double ...doubles) {
-		return Arrays.asList(doubles);
 	}
 
 }

@@ -153,53 +153,7 @@ MyMultFunc := Function[{farg, garg},
 	    gUpperMax = Max[guk*x1+gum, guk*x2+gum];
 	    fUpperMax = Max[fuk*x1+fum, fuk*x2+fum];
 
-	    If[0 <= fLowerMin && 0 <= gLowerMin,
-	       Print["go 11"];
-	       resLower = Join[resLower, MyCombine[fil, gil, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fiu, giu, x1, x2, 2]];
-	   ];
-	    If[fUpperMax <= 0 && 0 <= gLowerMin,
-	       Print["go 21"];
-	       resLower = Join[resLower, MyCombine[fil, giu, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fiu, gil, x1, x2, 2]];
-	   ];
-	    If[(fUpperMax > 0 && 0 > fLowerMin) && 0 <= gLowerMin,
-	       Print["go 31"];
-	       resLower = Join[resLower, MyCombine[fil, giu, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fiu, giu, x1, x2, 2]];
-	   ];
-
-	   If[0 <= fLowerMin && 0 >= gUpperMax,
-	       Print["go 12"];
-	       resLower = Join[resLower, MyCombine[fiu, gil, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fil, giu, x1, x2, 2]];
-	   ];
-	   If[fUpperMax <= 0 && 0 >= gUpperMax,
-	       Print["go 22"];
-	       resLower = Join[resLower, MyCombine[fiu, giu, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fil, gil, x1, x2, 2]];
-	   ];
-	   If[(fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax,
-	       Print["go 32"];
-	       resLower = Join[resLower, MyCombine[fiu, gil, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fil, gil, x1, x2, 2]];
-	   ];
-
-	   If[0 <= fLowerMin && (gUpperMax > 0 && 0 > gLowerMin),
-	       Print["go 13"];
-	       resLower = Join[resLower, MyCombine[fiu, gil, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fiu, giu, x1, x2, 2]];
-	   ];
-	    If[fUpperMax <= 0 && (gUpperMax > 0 && 0 > gLowerMin),
-	       Print["go 23"];
-	       resLower = Join[resLower, MyCombine[fil, giu, x1, x2, 1]];
-	       resUpper = Join[resUpper, MyCombine[fil, gil, x1, x2, 2]];
-	   ];
-	   If[(fUpperMax > 0 && 0 > fLowerMin) && (gUpperMax > 0 && 0 > gLowerMin),
-	       Print["go 33"];
-	       resLower = Join[resLower, MyCombine2[fil, fiu, gil, giu]];
-	       resUpper = Join[resUpper, MyCombine2[fil, fiu, gil, giu]];
-	   ];
+	    
 	];
 	AppendTo[resLower, {Last[f[[1]]][[1]], 0, 0}];
 	AppendTo[resUpper, {Last[f[[1]]][[1]], 0, 0}];
@@ -251,8 +205,9 @@ MyVisualize[mult, Function[x, multFunc[func1[x], func2[x]]], -Pi, 2*Pi]
 MakeDemo["-sin", func1, points1]
 MakeDemo["x3", func2, points2]
 MakeDemo["x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]], points1]
+(*
 MakeDemo["x^3 times -sin", Function[x, -x*x*x*Sin[x]], points1]
-
+*)
 Plot[(x*x*x/20 - 5*Sin[x]), {x, -Pi, 2*Pi}]
 (*
 Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
