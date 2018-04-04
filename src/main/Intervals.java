@@ -33,10 +33,10 @@ public class Intervals {
 	}
 	
 	public Intervals mult(Intervals intervals) {
-		
 		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
 		
-		return null;
+		
+		return pair.getTwo();
 	}
 	
 	private Intervals unoFunc(Function<Double, Double> unoFunc) {
@@ -92,12 +92,12 @@ public class Intervals {
 				--i;
 				--j;
 			} else if (less(i1.getX1(), i2.getX1())) {
-				one.add(i1.setX(i2.getX1(), i2.getX2()));
+				one.add(i1.withX(i2.getX1(), i2.getX2()));
 				two.add(i2);
 				--j;
 			} else {
 				one.add(i1);
-				two.add(i2.setX(i1.getX1(), i1.getX2()));
+				two.add(i2.withX(i1.getX1(), i1.getX2()));
 				--i;
 			}
 		}
@@ -122,8 +122,26 @@ public class Intervals {
 	private Intervals addZeroes() {
 		Intervals res = new Intervals();
 		forEach(i -> {
-			
-			
+			Point l = i.getLowerIntersectZero();
+			Point u = i.getUpperIntersectZero();
+			List<Point> points = new ArrayList<>();
+			if (l != null) points.add(l);
+			if (u != null) points.add(u);
+			if (points.size() == 2 && points.get(0).getX() > points.get(1).getX()) {
+				Collections.reverse(points);
+			}
+			if (points.size() == 0) {
+				res.add(i);
+			}
+			if (points.size() == 1) {
+				res.add(i.withX(i.getX1(), points.get(0).getX()));
+				res.add(i.withX(points.get(0).getX(), i.getX2()));
+			}
+			if (points.size() == 2) {
+				res.add(i.withX(i.getX1(), points.get(0).getX()));
+				res.add(i.withX(points.get(0).getX(), points.get(0).getX()));
+				res.add(i.withX(points.get(1).getX(), i.getX2()));
+			}
 		});
 		return res;
 	}

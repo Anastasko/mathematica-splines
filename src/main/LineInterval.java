@@ -1,5 +1,8 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LineInterval {
 	
 	private double x1;
@@ -17,7 +20,7 @@ public class LineInterval {
 		this.upper = upper;
 	}
 
-	public LineInterval setX(double x1, double x2) {
+	public LineInterval withX(double x1, double x2) {
 		return new LineInterval(x1, x2, lower.clone(), upper.clone());
 	}
 
@@ -40,6 +43,31 @@ public class LineInterval {
 	@Override
 	public String toString() {
 		return "\nx=" + x1 + ", \nupper=" + upper + ", \nlower=" + lower + "\n";
+	}
+
+	public Point getUpperIntersectZero() {
+		return getIntersectZero(upper);
+	}
+	
+	public Point getLowerIntersectZero() {
+		return getIntersectZero(lower);
+	}
+
+	private Point getIntersectZero(Line line) {
+		if (sign(line) < 0) {
+			return line.intersect(new Line(0, 0));
+		}
+		return null;
+	}
+
+	private double sign(Line line) {
+		return line.at(x1) * line.at(x2);
+	}
+	
+	public static List<LineInterval> mult(LineInterval a, LineInterval b) {
+		List<LineInterval> res = new ArrayList<>();
+		
+		return res;
 	}
 	
 }

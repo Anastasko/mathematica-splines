@@ -19,12 +19,11 @@ public class Line {
 	
 	public Point intersect(Line l) {
 		if (l.k == k && l.m != m) {
-			throw new MyException("Lines Intersection: k1 == k2 && m1 != m2");
+			return null;
 		}
 		double xc = -(l.m - m);
 		if (xc != 0) xc /= (l.k - k);
-		double yc = k*xc + m;
-		return new Point(xc, yc);
+		return new Point(xc, at(xc));
 	}
 
 	public double getK() {
@@ -42,6 +41,10 @@ public class Line {
 	@Override
 	public String toString() {
 		return "{" + k + ", " + m + "}";
+	}
+
+	public double at(double x) {
+		return k*x + m;
 	}
 	
 
