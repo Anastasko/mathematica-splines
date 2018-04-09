@@ -8,8 +8,9 @@ import main.Line;
 import main.LineInterval;
 import main.MyException;
 import main.Point;
+import utils.Utils;
 
-public class Func {
+public class Func extends Utils {
 
 	public static Intervals func(
 			List<Double> sp,
@@ -20,6 +21,12 @@ public class Func {
 		if (sp.size() != spozn.size() + 1) {
 			throw new MyException("sp.size() != spozn.size() + 1");
 		}
+		for(int i=0; i < spozn.size(); ++i) {
+			if (equals(sp.get(i), sp.get(i+1))) {
+				throw new MyException("sp[" + i + "] == sp[" + (i+1) + "]\n" + sp);
+			}
+		}
+		
 		Intervals res = new Intervals();
 		for(int i=0; i<spozn.size(); ++i) {
 			double x1 = sp.get(i);

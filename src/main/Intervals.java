@@ -10,6 +10,8 @@ import java.util.function.Function;
 
 import main.task1.Func;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import utils.BiIterable;
+import utils.Utils;
 
 public class Intervals extends Utils {
 
@@ -42,17 +44,12 @@ public class Intervals extends Utils {
 	}
 	
 	public Intervals mult(Intervals intervals) {
-		print(this.addZeroes().getLower());
-		print(intervals.addZeroes().getLower());
 		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
-		print(pair.getOne().getLower());
 		Intervals res = new Intervals();
 		biForEach(pair).forEach((f,g) -> {
 			
 			double x1 = f.getX1();
 			double x2 = f.getX2();
-			
-			print(x1 + " " + x2);
 			
 			double gLowerMin = Math.min(g.getLower().at(x1), g.getLower().at(x2));
 			double fLowerMin = Math.min(f.getLower().at(x1), f.getLower().at(x2));
@@ -102,24 +99,41 @@ public class Intervals extends Utils {
 	}
 
 	private List<LineInterval> combine(Line l1, Line l2, double x1, double x2, Function<Intervals, List<LineInterval>> lu) {
-		if (equals(l1.getK(), 0)) {
+		if (equals(l1.getK(), .0)) {
 			return list(new LineInterval(x1, x2, l2.unoFunc(x -> x*l1.getM())));
 		}
-		if (equals(l2.getK(), 0)) {
+		if (equals(l2.getK(), .0)) {
 			return list(new LineInterval(x1, x2, l1.unoFunc(x -> x*l2.getM())));
 		}
+		
+		final Function<Double, Double> func = x -> l1.getK() * l2.getK() * x * x + 
+				 l1.getK() * l2.getM() * x +
+				 l1.getM() * l2.getK() * x +
+				 l1.getM() * l2.getM();
+		
+		final Function<Double, Double> funcd = x -> 2 * l1.getK() * l2.getK() * x +
+			     l1.getK() * l2.getM() +
+			     l1.getM() * l2.getK();
+		
+		Point i = new Point(
+				-l1.getK() * l2.getM() +
+			     l1.getM() * l2.getK() / 
+			     (2 * l1.getK() * l2.getK()), 0);
+		if (less(i.getX(), x2) && greater(i.getX(), x1)) {
+			
+			return lu.apply(Func.func(
+					list(x1, i.getX(), x2),
+					list(l1.getK() * l2.getK(), l1.getK() * l2.getK()),
+					func,
+					funcd
+				));
+		}
+		
 		return lu.apply(Func.func(
 				list(x1, x2),
 				list(l1.getK() * l2.getK()),
-				
-				x -> l1.getK() * l2.getK() * x * x + 
-					 l1.getK() * l2.getM() * x +
-					 l1.getM() * l2.getK() * x +
-					 l1.getM() * l2.getM(),
-					 
-				x -> 2 * l1.getK() * l2.getK() * x +
-				     l1.getK() * l2.getM() +
-				     l1.getM() * l2.getK()
+				func,
+				funcd
 			));
 	}
 
@@ -238,7 +252,7 @@ public class Intervals extends Utils {
 	
 	public void addAllLower(List<LineInterval> i) {
 		if (lower.size() > 0 && i.get(0).getX1() < lower.get(lower.size()-1).getX1()) {
-			//throw new MyException("how");
+			throw new MyException("how");
 		}
 		lower.addAll(i);
 	}

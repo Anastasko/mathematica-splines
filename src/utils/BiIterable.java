@@ -1,8 +1,10 @@
-package main;
+package utils;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import main.MyException;
 
 public class BiIterable<T> {
 	

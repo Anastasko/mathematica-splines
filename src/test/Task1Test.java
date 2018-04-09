@@ -10,12 +10,13 @@ import org.junit.Test;
 import main.Intervals;
 import main.LineInterval;
 import main.MyException;
-import main.Utils;
 import main.task1.Func;
 import main.task1.Sample;
 import main.task1.Samples;
+import utils.Utils;
+import validation.Validator;
 
-public class Task1Test {
+public class Task1Test extends Utils {
 
 	@Test
 	public void testSample1() {
@@ -26,7 +27,7 @@ public class Task1Test {
 
 	@Test
 	public void testSample2() {
-		Sample s = Samples.getSample2();
+		Sample s = Samples.getSampleX3();
 		Intervals is = func(s);
 		output("x3", is);
 	}
@@ -34,7 +35,7 @@ public class Task1Test {
 	@Test
 	public void testSamplePlus() {
 		Sample s1 = Samples.getSample1();
-		Sample s2 = Samples.getSample2();
+		Sample s2 = Samples.getSampleX3();
 		Intervals is1 = func(s1);
 		Intervals is2 = func(s2);
 		output("x^3 div 20 - 5sin", is1.mult(5).plus(is2.div(20)));
@@ -43,7 +44,7 @@ public class Task1Test {
 	@Test
 	public void testSampleTimes() {
 		Sample s1 = Samples.getSample1();
-		Sample s2 = Samples.getSample2();
+		Sample s2 = Samples.getSampleX3();
 		Intervals is1 = func(s1);
 		Intervals is2 = func(s2);
 		output("x^3 times -sin", is1.mult(is2));
@@ -52,21 +53,15 @@ public class Task1Test {
 	private static final String filePath = "/Users/lorry/data/";
 
 	private void output(String name, Intervals intervals) {
-		validate(intervals.getLower());
-		validate(intervals.getUpper());
+		MyException e = Validator.validate(intervals);
+		if (e != null) {
+			print(intervals);
+			print(name + " failed!");
+			throw e;
+		}
 		write(intervals.getLower(), filePath + name + "-lower");
 		write(intervals.getUpper(), filePath + name + "-upper");
-		System.out.println(name);
-	}
-
-	private void validate(List<LineInterval> list) {
-		for(int i=1; i<list.size(); ++i) {
-			double p = list.get(i).getX1();
-			double pp = list.get(i-1).getX1();
-			if (Utils.less(p, pp)) {
-				throw new MyException(p + " < " + pp);
-			}
-		}
+		print(name + " OK!");
 	}
 
 	private void write(List<LineInterval> list, String fileName) {
