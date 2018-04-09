@@ -2,10 +2,10 @@ package utils;
 
 import main.Const;
 
-public class Compare {
+public class Compare extends Const {
 
 	public static boolean less(double x1, double x2) {
-		return x1 + Const.EPS < x2;
+		return x1 + EPS < x2;
 	}
 	
 	public static boolean greater(double x1, double x2) {

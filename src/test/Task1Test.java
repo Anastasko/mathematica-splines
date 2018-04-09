@@ -1,84 +1,45 @@
 package test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.List;
-
 import org.junit.Test;
 
 import main.Intervals;
-import main.LineInterval;
-import main.MyException;
-import main.task1.Func;
-import main.task1.Sample;
-import main.task1.Samples;
-import utils.Utils;
-import validation.Validator;
+import main.task1.AbstractFunction;
+import main.task1.FunctionStore;
 
-public class Task1Test extends Utils {
-
+public class Task1Test extends TestUtils {
+	
+	private static FunctionStore store = new FunctionStore(-Pi, 2*Pi);
+	
 	@Test
-	public void testSample1() {
-		Sample s = Samples.getSample1();
-		Intervals is = func(s);
-		output("-sin", is);
+	public void testSin() {
+		AbstractFunction sin = store.sin();
+		Intervals is = func(sin);
+		output("-sin", is.mult(-1.0));
 	}
 
 	@Test
-	public void testSample2() {
-		Sample s = Samples.getSampleX3();
+	public void testX3() {
+		AbstractFunction s = store.x3();
 		Intervals is = func(s);
 		output("x3", is);
 	}
 
 	@Test
-	public void testSamplePlus() {
-		Sample s1 = Samples.getSample1();
-		Sample s2 = Samples.getSampleX3();
+	public void testPlus() {
+		AbstractFunction s1 = store.sin();
+		AbstractFunction s2 = store.x3();
 		Intervals is1 = func(s1);
 		Intervals is2 = func(s2);
 		output("x^3 div 20 - 5sin", is1.mult(5).plus(is2.div(20)));
 	}
 
 	@Test
-	public void testSampleTimes() {
-		Sample s1 = Samples.getSample1();
-		Sample s2 = Samples.getSampleX3();
+	public void testTimes() {
+		AbstractFunction s1 = store.sin();
+		AbstractFunction s2 = store.x3();
 		Intervals is1 = func(s1);
 		Intervals is2 = func(s2);
-		output("x^3 times -sin", is1.mult(is2));
-	}
-	
-	private static final String filePath = "/Users/lorry/data/";
-
-	private void output(String name, Intervals intervals) {
-		MyException e = Validator.validate(intervals);
-		if (e != null) {
-			print(intervals);
-			print(name + " failed!");
-			throw e;
-		}
-		write(intervals.getLower(), filePath + name + "-lower");
-		write(intervals.getUpper(), filePath + name + "-upper");
-		print(name + " OK!");
-	}
-
-	private void write(List<LineInterval> list, String fileName) {
-		File file = new File(fileName + ".txt");
-		try {
-			PrintWriter pw = new PrintWriter(file);
-			list.forEach(i -> pw.println(i.getX1() + " " + i.getLine().getK() + " " + i.getLine().getM()));
-			LineInterval last = list.get(list.size()-1);
-			pw.println(last.getX2() + " " + last.getLine().getK() + " " + last.getLine().getM());
-			pw.close();
-		} catch (FileNotFoundException e) {
-			throw new MyException(e);
-		}
-	}
-
-	private Intervals func(Sample s) {
-		return Func.func(s.sp, s.spozn, s.y, s.yd);
+		output("x^3 times -sin", is1.mult(is2).mult(-1.0));
 	}
 
 }

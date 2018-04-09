@@ -14,11 +14,17 @@ import utils.BiIterable;
 import utils.Utils;
 
 public class Intervals extends Utils {
+	
+	private Interval interval;
 
 	private List<LineInterval> lower = new ArrayList<>();
 	
 	private List<LineInterval> upper = new ArrayList<>();
 	
+	public Intervals(Interval interval) {
+		this.interval = interval;
+	}
+
 	public List<LineInterval> getLower() {
 		return lower;
 	}
@@ -45,7 +51,7 @@ public class Intervals extends Utils {
 	
 	public Intervals mult(Intervals intervals) {
 		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
-		Intervals res = new Intervals();
+		Intervals res = empty();
 		biForEach(pair).forEach((f,g) -> {
 			
 			double x1 = f.getX1();
@@ -55,42 +61,51 @@ public class Intervals extends Utils {
 			double fLowerMin = Math.min(f.getLower().at(x1), f.getLower().at(x2));
 			double gUpperMax = Math.max(g.getUpper().at(x1), g.getUpper().at(x2));
 			double fUpperMax = Math.max(f.getUpper().at(x1), f.getUpper().at(x2));
-
+			boolean debug = true;
 			if (0 <= fLowerMin && 0 <= gLowerMin) {
+				print(debug, "11");
 				res.addAllLower(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 			if (fUpperMax <= 0 && 0 <= gLowerMin) {
+				print(debug, "21");
 				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 <= gLowerMin) {
+				print(debug, "31");
 				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 
 			if (0 <= fLowerMin && 0 >= gUpperMax) {
+				print(debug, "12");
 				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 			if (fUpperMax <= 0 && 0 >= gUpperMax) {
+				print(debug, "22");
 				res.addAllLower(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax) {
+				print(debug, "23");
 				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 
 			if (0 <= fLowerMin && (gUpperMax > 0 && 0 > gLowerMin)) {
+				print(debug, "13");
 				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 			if (fUpperMax <= 0 && (gUpperMax > 0 && 0 > gLowerMin)) {
+				print(debug, "23");
 				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
 				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 			if ((fUpperMax > 0 && 0 > fLowerMin) && (gUpperMax > 0 && 0 > gLowerMin)) {
+				print(debug, "33");
 				throw new NotImplementedException();
 				// res.addAll(combine2(f,g));
 			}
@@ -138,7 +153,7 @@ public class Intervals extends Utils {
 	}
 
 	private Intervals unoFunc(Function<Double, Double> unoFunc) {
-		Intervals res = new Intervals();
+		Intervals res = empty();
 		lowerUpper(lu -> {
 			lu.apply(this).forEach(i -> {
 				Line line = i.getLine().unoFunc(unoFunc);
@@ -149,7 +164,7 @@ public class Intervals extends Utils {
 	}
 	
 	private Intervals biFunc(Intervals intervals, BiFunction<Double, Double, Double> biFunc) {
-		Intervals res = new Intervals();
+		Intervals res = empty();
 		Pair<Intervals, Intervals> pair = normalize(this, intervals);
 		lowerUpper(lu -> {
 			biForEach(lu, pair).forEach((i1, i2) -> {
@@ -190,8 +205,8 @@ public class Intervals extends Utils {
 	 * на вихід ті ж обмежники зі всіма точками (точки взяті з одного в інший і навпаки)
 	 */
 	private static Pair<Intervals, Intervals> normalize(Intervals A, Intervals B) {
-		Intervals one = new Intervals();
-		Intervals two = new Intervals();
+		Intervals one = new Intervals(A.getInterval());
+		Intervals two = new Intervals(B.getInterval());
 		lowerUpper(lu -> {
 			List<LineInterval> a = lu.apply(A);
 			List<LineInterval> b = lu.apply(B);
@@ -230,7 +245,7 @@ public class Intervals extends Utils {
 	 * на вихід той же обмежник з доданими нуль-точками
 	 */
 	private Intervals addZeroes() {
-		Intervals res = new Intervals();
+		Intervals res = empty();
 		lowerUpper(lu -> {
 			forEach(lu.apply(this), i -> {
 				Point p = i.getIntersectZero();
@@ -246,23 +261,32 @@ public class Intervals extends Utils {
 		return res;
 	}
 
-	public void addLower(LineInterval i) {
-		lower.add(i);
+	private Intervals empty() {
+		return new Intervals(getInterval());
 	}
 	
 	public void addAllLower(List<LineInterval> i) {
-		if (lower.size() > 0 && i.get(0).getX1() < lower.get(lower.size()-1).getX1()) {
-			throw new MyException("how");
-		}
-		lower.addAll(i);
-	}
-	
-	public void addUpper(LineInterval i) {
-		upper.add(i);
+		i.forEach(one -> addLower(one));
 	}
 	
 	public void addAllUpper(Collection<LineInterval> i) {
-		upper.addAll(i);
+		i.forEach(one -> addUpper(one));
+	}
+	
+	public void addLower(LineInterval i) {
+		add(l -> l.getLower(), "lower", i);
+	}
+	
+	public void addUpper(LineInterval i) {
+		add(l -> l.getUpper(), "upper", i);
+	}
+	
+	private void add(Function<Intervals, List<LineInterval>> lu, String name, LineInterval i) {
+		List<LineInterval> list = lu.apply(this);
+		if (list.size() > 0 && less(i.getX1(), last(list).getX1())) {
+			throw fail("how", "i.x1=" + i.getX1(), "last(" + name + ").x1=" + last(list).getX1());
+		}
+		list.add(i);
 	}
 	
 	private void reverse() {
@@ -278,13 +302,9 @@ public class Intervals extends Utils {
 	public void forEach(List<LineInterval> is, Consumer<LineInterval> consumer) {
 		is.forEach(consumer);
 	}
-
-	public LineInterval lastUpper() {
-		return upper.get(upper.size()-1);
-	}
 	
-	public LineInterval lastLower() {
-		return lower.get(lower.size()-1);
+	public Interval getInterval() {
+		return interval;
 	}
 	
 }

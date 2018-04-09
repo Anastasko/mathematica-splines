@@ -3,6 +3,7 @@ package main.task1;
 import java.util.List;
 import java.util.function.Function;
 
+import main.Interval;
 import main.Intervals;
 import main.Line;
 import main.LineInterval;
@@ -26,8 +27,7 @@ public class Func extends Utils {
 				throw new MyException("sp[" + i + "] == sp[" + (i+1) + "]\n" + sp);
 			}
 		}
-		
-		Intervals res = new Intervals();
+		Intervals res = new Intervals(new Interval(first(sp), last(sp)));
 		for(int i=0; i<spozn.size(); ++i) {
 			double x1 = sp.get(i);
 			double x2 = sp.get(i+1);

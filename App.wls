@@ -40,14 +40,15 @@ MyVisualize := Function[{res, y, le, ri},
 	Plot[{lo[x], up[x], y[x]}, {x, le, ri}, Epilog -> {Red, PointSize@Medium, Point[pointDots]}]
 ];
 
-MakeDemo := Function[{show, name, yfunc, sp},
+MakeDemo := Function[{show, name, yfunc},
 	If[show == 1,
+	    points = Import["data/" <> name <> "-bounds.txt", "Table"][[1]];
 		lol = Import["data/" <> name <> "-lower.txt", "Table"];
 		upu = Import["data/" <> name <> "-upper.txt", "Table"];
 		res = {lol, upu};
 		MyPrint[res];
 		Print[Text[Style[yfunc, 16]]];
-		MyVisualize[res, yfunc, First[sp], Last[sp]]
+		MyVisualize[res, yfunc, First[points], Last[points]]
 	]
 ];
 
@@ -58,18 +59,16 @@ MyPrint := Function[arg,
 	Print["upper: ", arg[[2]]];
 ];
 
-points = {-Pi, -2};
-
 func1 := Function[x, -Sin[x]];
 func1d := Function[x, -Cos[x]];
 
 func2 := Function[x, x*x*x];
 func2d := Function[x, 3*x*x];
 
-MakeDemo[1, "x^3 times -sin", Function[x, -x*x*x*Sin[x]], points]
-MakeDemo[0, "x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]], points]
-MakeDemo[1, "x3", func2, points]
-MakeDemo[1, "-sin", func1, points]
+MakeDemo[1, "x^3 times -sin", Function[x, -x*x*x*Sin[x]]]
+MakeDemo[0, "x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]]]
+MakeDemo[1, "x3", func2]
+MakeDemo[1, "-sin", func1]
 
 (*
 Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
