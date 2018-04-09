@@ -4,16 +4,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import main.MyException;
-
-public class BiIterable<T> {
+public class BiIterable<T> extends Utils {
 	
 	List<T> list1;
 	List<T> list2;
 
 	public BiIterable(List<T> list1, List<T> list2) {
 		if (list1.size() != list2.size()) {
-			throw new MyException("biiterable requires lists of the same length " + list1.size() + " " + list2.size());
+			throw fail("biiterable requires lists of the same length " + list1.size() + " " + list2.size());
 		}
 		this.list1 = list1;
 		this.list2 = list2;

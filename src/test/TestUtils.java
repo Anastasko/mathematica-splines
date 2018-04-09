@@ -22,7 +22,7 @@ public class TestUtils extends Utils {
 		MyException e = Validator.validate(intervals);
 		if (e != null) {
 			print(intervals);
-			print(name + " failed!");
+			printErr(name + " failed!");
 			throw e;
 		}
 		write(segments(intervals.getLower()), name + "-lower");

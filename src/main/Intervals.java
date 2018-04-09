@@ -38,15 +38,21 @@ public class Intervals extends Utils {
 	}
 	
 	public Intervals minus(Intervals intervals) {
-		return biFunc(intervals, (a,b) -> a-b);
+		return plus(intervals.mult(-1.0));
 	}
 	
 	public Intervals div(double x) {
-		return unoFunc(a -> a/x);
+		return unoFunc(a -> a/x, x < 0);
 	}
 	
 	public Intervals mult(double x) {
-		return unoFunc(a -> a*x);
+		return unoFunc(a -> a*x, x < 0);
+	}
+	
+	private void swapLowerUpper() {
+		List<LineInterval> temp = lower;
+		lower = upper;
+		upper = temp;
 	}
 	
 	public Intervals mult(Intervals intervals) {
@@ -152,7 +158,7 @@ public class Intervals extends Utils {
 			));
 	}
 
-	private Intervals unoFunc(Function<Double, Double> unoFunc) {
+	private Intervals unoFunc(Function<Double, Double> unoFunc, boolean swap) {
 		Intervals res = empty();
 		lowerUpper(lu -> {
 			lu.apply(this).forEach(i -> {
@@ -160,6 +166,7 @@ public class Intervals extends Utils {
 				lu.apply(res).add(new LineInterval(i.getX1(), i.getX2(), line));
 			});
 		});
+		if (swap) res.swapLowerUpper();
 		return res;
 	}
 	
@@ -186,13 +193,13 @@ public class Intervals extends Utils {
 	}
 	
 	private BiIterable<LinesInterval> biForEach(Pair<Intervals, Intervals> pair) {
-		List<LinesInterval> list1 = intervals(pair.getOne());
-		List<LinesInterval> list2 = intervals(pair.getTwo());
+		List<LinesInterval> list1 = pair.getOne().intervals();
+		List<LinesInterval> list2 = pair.getTwo().intervals();
 		return new BiIterable<LinesInterval>(list1, list2);
 	}
 
-	private List<LinesInterval> intervals(Intervals one) {
-		BiIterable<LineInterval> iterable = new BiIterable<>(one.getLower(), one.getUpper());
+	public List<LinesInterval> intervals() {
+		BiIterable<LineInterval> iterable = new BiIterable<>(getLower(), getUpper());
 		List<LinesInterval> res = new ArrayList<>();
 		iterable.forEach((lower, upper) -> {
 			res.add(new LinesInterval(lower.getX1(), lower.getX2(), lower.getLine(), upper.getLine()));

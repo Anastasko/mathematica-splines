@@ -20,4 +20,12 @@ public class LinesInterval extends Interval {
 		return upper;
 	}
 	
+	public double getLowerAt(double x) {
+		return lower.at(x);
+	}
+
+	public double getUpperAt(double x) {
+		return upper.at(x);
+	}
+	
 }

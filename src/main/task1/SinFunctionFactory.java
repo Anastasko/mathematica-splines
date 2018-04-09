@@ -19,7 +19,30 @@ public class SinFunctionFactory extends Utils {
 				sin.getSp().toArray());
 		
 		Assert.assertArrayEquals(
-				list(1.0, -1.0, -1.0).toArray(), 
+				list(-1.0, 1.0, 1.0).toArray(), 
+				sin.getSpozn().toArray());
+	}
+	
+	@Test
+	public void test2() {
+		AbstractFunction sin = create(-Const.Pi, 0);
+		
+		Assert.assertArrayEquals(
+				list(-Const.Pi, -Const.Pi/2, 0.0).toArray(), 
+				sin.getSp().toArray());
+		Assert.assertArrayEquals(
+				list(1.0, 1.0).toArray(), 
+				sin.getSpozn().toArray());
+	}
+	
+	@Test
+	public void test3() {
+		AbstractFunction sin = create(0, Const.Pi);
+		Assert.assertArrayEquals(
+				list(0.0, Const.Pi/2, Const.Pi).toArray(), 
+				sin.getSp().toArray());
+		Assert.assertArrayEquals(
+				list(-1.0, -1.0).toArray(), 
 				sin.getSpozn().toArray());
 	}
 
@@ -56,7 +79,10 @@ public class SinFunctionFactory extends Utils {
 	}
 	
 	private static double oznByNumber(Long pointNumber) {
-		return pointNumber / 2 % 2 == 0 ? 1.0 : -1.0;
+		if (pointNumber < 0) {
+			return -1*oznByNumber(~pointNumber);
+		}
+		return pointNumber / 2 % 2 == 0 ? -1.0 : 1.0;
 	}
 	
 	

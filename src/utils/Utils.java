@@ -45,6 +45,10 @@ public class Utils extends Compare {
 		System.out.println(o);
 	}
 	
+	public static void printErr(Object s) {
+		System.err.println(s);
+	}
+	
 	public static void print(boolean output, Object o) {
 		if (output) print(o);
 	}

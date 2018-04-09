@@ -15,12 +15,12 @@ public class X3FunctionFactory extends Utils {
 		if (less(lower, 0) && less(0, upper)) {
 			sp = list(lower, 0.0, upper);
 			spozn = list(-1.0, 1.0);
-		} else if (less(upper, 0)){
-			sp = list(lower, upper);
-			spozn = list(-1.0);
-		} else {
+		} else if (less(0, upper)){
 			sp = list(lower, upper);
 			spozn = list(1.0);
+		} else {
+			sp = list(lower, upper);
+			spozn = list(-1.0);
 		}
 		return new AbstractFunction(
 			sp,

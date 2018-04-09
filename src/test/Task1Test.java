@@ -30,9 +30,18 @@ public class Task1Test extends TestUtils {
 		AbstractFunction s2 = store.x3();
 		Intervals is1 = func(s1);
 		Intervals is2 = func(s2);
-		output("x^3 div 20 - 5sin", is1.mult(5).plus(is2.div(20)));
+		output("x^3 div 20 + 5sin", is1.mult(5).plus(is2.div(20)));
 	}
 
+	@Test
+	public void testMinus() {
+		AbstractFunction s1 = store.sin();
+		AbstractFunction s2 = store.x3();
+		Intervals is1 = func(s1);
+		Intervals is2 = func(s2);
+		output("x^3 div 20 - 5sin", is2.div(20).minus(is1.mult(5)));
+	}
+	
 	@Test
 	public void testTimes() {
 		AbstractFunction s1 = store.sin();

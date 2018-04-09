@@ -5,6 +5,7 @@ import java.util.List;
 import main.Intervals;
 import main.Line;
 import main.LineInterval;
+import main.LinesInterval;
 import main.MyException;
 import utils.Utils;
 
@@ -41,6 +42,14 @@ public class Validator extends Utils {
 	public static MyException validate(Intervals i) {
 		if (validate(i.getLower()) != null) return validate(i.getLower());
 		if (validate(i.getUpper()) != null) return validate(i.getUpper());
+//		for(LinesInterval in : i.intervals()) {
+//			if (greater(in.getLowerAt(in.getX1()), in.getUpperAt(in.getX1()))) {
+//				return fail(in, "lower > upper at x1", in.getLowerAt(in.getX1()) + " > " + in.getUpperAt(in.getX1()));
+//			}
+//			if (greater(in.getLowerAt(in.getX2()), in.getUpperAt(in.getX2()))) {
+//				return fail(in, "lower > upper at x2", in.getLowerAt(in.getX2()) + " > " + in.getUpperAt(in.getX2()));
+//			}
+//		}
 		return null;
 	}
 

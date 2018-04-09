@@ -9,6 +9,12 @@ public class Line {
 	private double m;
 
 	public Line(double k, double m) {
+		if (Double.isNaN(k)) {
+			throw new IllegalArgumentException("k can't be NaN");
+		}
+		if (Double.isNaN(m)) {
+			throw new IllegalArgumentException("m can't be NaN");
+		}
 		this.k = k;
 		this.m = m;
 	}

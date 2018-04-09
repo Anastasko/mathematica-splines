@@ -43,13 +43,13 @@ public class Func extends Utils {
 			Line lineBC = Line.make(pB, pC);
 			Line lineBD = Line.make(pB, pD);
 			double ozn = spozn.get(i);
-			if (ozn < 0) {
+			if (ozn > 0) {
 				res.addLower(new LineInterval(x1, xm, lineAC));
 				res.addUpper(new LineInterval(x1, xm, lineAD));
 				res.addLower(new LineInterval(xm, x2, lineBC));
 				res.addUpper(new LineInterval(xm, x2, lineBD));
 			}
-			if (ozn > 0) {
+			if (ozn < 0) {
 				res.addLower(new LineInterval(x1, xm, lineAD));
 				res.addUpper(new LineInterval(x1, xm, lineAC));
 				res.addLower(new LineInterval(xm, x2, lineBD));
