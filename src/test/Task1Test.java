@@ -23,7 +23,14 @@ public class Task1Test extends TestUtils {
 		Intervals is = func(s);
 		output("x3", is);
 	}
-
+	
+	@Test
+	public void testX2() {
+		AbstractFunction s = store.x2();
+		Intervals is = func(s);
+		output("x2", is);
+	}
+	
 	@Test
 	public void testPlus() {
 		AbstractFunction s1 = store.sin();
@@ -51,4 +58,13 @@ public class Task1Test extends TestUtils {
 		output("x^3 times -sin", is1.mult(is2).mult(-1.0));
 	}
 
+	@Test
+	public void testDiv() {
+		AbstractFunction s1 = store.sin();
+		AbstractFunction s2 = store.x3();
+		Intervals is1 = func(s1).plus(1.2);
+		Intervals is2 = func(s2).div(12.0);
+		output("x^3 div sin inc 2", is2.div(is1));
+	}
+	
 }

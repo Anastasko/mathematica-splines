@@ -7,6 +7,12 @@ public class Point {
 	private double y;
 
 	public Point(double x, double y) {
+		if (Double.isNaN(x)) {
+			throw new IllegalArgumentException("x can't be NaN");
+		}
+		if (Double.isNaN(y)) {
+			throw new IllegalArgumentException("y can't be NaN");
+		}
 		this.x = x;
 		this.y = y;
 	}

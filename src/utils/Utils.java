@@ -53,12 +53,12 @@ public class Utils extends Compare {
 		if (output) print(o);
 	}
 
-	public static MyException fail(Object... strings) {
+	public static void fail(Object... strings) {
 		String concat = "";
 		for(int i = strings.length - 1; i >=0; --i) {
 			concat += "\n" + strings[i];
 		}
-		return new MyException(concat);
+		throw new MyException(concat);
 	}
 
 }

@@ -35,9 +35,16 @@ public class Func extends Utils {
 			Line line2 = new Line(yd.apply(x2), y.apply(x2) - yd.apply(x2) * x2);
 			Point pA = new Point(x1, y.apply(x1));
 			Point pB = new Point(x2, y.apply(x2));
-			Point pC = line1.intersect(line2);
+			Point pC = line1.equals(line2)
+					? new Point((x1+x2)/2, y.apply((x1+x2)/2))
+					: line1.intersect(line2);
 			double xm = pC.getX();
 			Point pD = new Point(xm, y.apply(pC.getX()));
+			if (equals(pA.getX(), pC.getX())) {
+				fail("pa.x == pc.x",
+						"pA.x=" + pA.getX(),
+						"x1=" + x1 + " x2=" + x2);
+			}
 			Line lineAC = Line.make(pA, pC);
 			Line lineAD = Line.make(pA, pD);
 			Line lineBC = Line.make(pB, pC);

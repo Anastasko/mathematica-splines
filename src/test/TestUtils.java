@@ -19,8 +19,9 @@ public class TestUtils extends Utils {
 	private static final String filePath = "/Users/lorry/data/";
 
 	protected void output(String name, Intervals intervals) {
-		MyException e = Validator.validate(intervals);
-		if (e != null) {
+		try {
+			Validator.validate(intervals);
+		} catch (MyException e) {
 			print(intervals);
 			printErr(name + " failed!");
 			throw e;

@@ -37,7 +37,9 @@ MyVisualize := Function[{res, y, le, ri},
 		AppendTo[pointDots, {px, k*px+m}];
 	];
 	];
-	Plot[{lo[x], up[x], y[x]}, {x, le, ri}, Epilog -> {Red, PointSize@Medium, Point[pointDots]}]
+	Plot[{lo[x], up[x], y[x]}, {x, le, ri}, 
+	Epilog -> {Red, PointSize@Medium, Point[pointDots]}
+	]
 ];
 
 MakeDemo := Function[{show, name, yfunc},
@@ -65,15 +67,22 @@ func1d := Function[x, -Cos[x]];
 func2 := Function[x, x*x*x];
 func2d := Function[x, 3*x*x];
 
+ff[x_] = (x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3)
+
+Plot[{
+ff[x] - 0.7*((-12 - ff[x])*Sign[-12 - ff[x]])^0.5, 
+ff[x] + 0.7*((-12 - ff[x])*Sign[-12 - ff[x]])^0.5,
+ff[x]}, {x, -2.65, 4.54}]
+
+MakeDemo[1, "x^3 div sin inc 2", Function[x, x*x*x/12/(-Sin[x] + 1.2)]]
 MakeDemo[1, "x^3 times -sin", Function[x, -x*x*x*Sin[x]]]
 MakeDemo[1, "x^3 div 20 + 5sin", Function[x, x*x*x/20 + 5*Sin[x]]]
 MakeDemo[1, "x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]]]
 MakeDemo[1, "x3", Function[x, x*x*x]]
 MakeDemo[1, "-sin", func1]
 
-(*
-Plot[(x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3), {x, -2,5}]
-*)
+
+
 
 
 

@@ -2,7 +2,9 @@ package main;
 
 import java.util.function.Function;
 
-public class Line {
+import utils.Utils;
+
+public class Line extends Utils {
 	
 	private double k;
 	
@@ -26,12 +28,16 @@ public class Line {
 	}
 	
 	public Point intersect(Line l) {
-		if (l.k == k && l.m != m) {
+		if (equals(l.k, k) && !equals(l.m, m)) {
 			return null;
 		}
 		double xc = -(l.m - m);
-		if (xc != 0) xc /= (l.k - k);
+		xc /= (l.k - k);
 		return new Point(xc, at(xc));
+	}
+	
+	public boolean equals(Line l) {
+		return equals(l.k, k) && equals(l.m, m);
 	}
 
 	public double getK() {
@@ -57,6 +63,10 @@ public class Line {
 
 	public Line unoFunc(Function<Double, Double> unoFunc) {
 		return new Line(unoFunc.apply(k), unoFunc.apply(m));
+	}
+	
+	public Line up(Double up) {
+		return new Line(k, m + up);
 	}
 	
 }

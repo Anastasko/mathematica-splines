@@ -70,45 +70,45 @@ public class Intervals extends Utils {
 			boolean debug = true;
 			if (0 <= fLowerMin && 0 <= gLowerMin) {
 				print(debug, "11");
-				res.addAllLower(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getLower(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 			if (fUpperMax <= 0 && 0 <= gLowerMin) {
 				print(debug, "21");
-				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getUpper(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 <= gLowerMin) {
 				print(debug, "31");
-				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 
 			if (0 <= fLowerMin && 0 >= gUpperMax) {
 				print(debug, "12");
-				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getLower(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 			if (fUpperMax <= 0 && 0 >= gUpperMax) {
 				print(debug, "22");
-				res.addAllLower(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getUpper(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax) {
 				print(debug, "23");
-				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 
 			if (0 <= fLowerMin && (gUpperMax > 0 && 0 > gLowerMin)) {
 				print(debug, "13");
-				res.addAllLower(combine(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
 			}
 			if (fUpperMax <= 0 && (gUpperMax > 0 && 0 > gLowerMin)) {
 				print(debug, "23");
-				res.addAllLower(combine(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
-				res.addAllUpper(combine(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
+				res.addAllLower(combineMult(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineMult(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
 			}
 			if ((fUpperMax > 0 && 0 > fLowerMin) && (gUpperMax > 0 && 0 > gLowerMin)) {
 				print(debug, "33");
@@ -119,7 +119,7 @@ public class Intervals extends Utils {
 		return res;
 	}
 
-	private List<LineInterval> combine(Line l1, Line l2, double x1, double x2, Function<Intervals, List<LineInterval>> lu) {
+	private List<LineInterval> combineMult(Line l1, Line l2, double x1, double x2, Function<Intervals, List<LineInterval>> lu) {
 		if (equals(l1.getK(), .0)) {
 			return list(new LineInterval(x1, x2, l2.unoFunc(x -> x*l1.getM())));
 		}
@@ -127,10 +127,7 @@ public class Intervals extends Utils {
 			return list(new LineInterval(x1, x2, l1.unoFunc(x -> x*l2.getM())));
 		}
 		
-		final Function<Double, Double> func = x -> l1.getK() * l2.getK() * x * x + 
-				 l1.getK() * l2.getM() * x +
-				 l1.getM() * l2.getK() * x +
-				 l1.getM() * l2.getM();
+		final Function<Double, Double> func = x -> l1.at(x) * l2.at(x);
 		
 		final Function<Double, Double> funcd = x -> 2 * l1.getK() * l2.getK() * x +
 			     l1.getK() * l2.getM() +
@@ -272,7 +269,7 @@ public class Intervals extends Utils {
 		return new Intervals(getInterval());
 	}
 	
-	public void addAllLower(List<LineInterval> i) {
+	public void addAllLower(Collection<LineInterval> i) {
 		i.forEach(one -> addLower(one));
 	}
 	
@@ -291,7 +288,7 @@ public class Intervals extends Utils {
 	private void add(Function<Intervals, List<LineInterval>> lu, String name, LineInterval i) {
 		List<LineInterval> list = lu.apply(this);
 		if (list.size() > 0 && less(i.getX1(), last(list).getX1())) {
-			throw fail("how", "i.x1=" + i.getX1(), "last(" + name + ").x1=" + last(list).getX1());
+			fail("how", "i.x1=" + i.getX1(), "last(" + name + ").x1=" + last(list).getX1());
 		}
 		list.add(i);
 	}
@@ -312,6 +309,85 @@ public class Intervals extends Utils {
 	
 	public Interval getInterval() {
 		return interval;
+	}
+
+	public Intervals plus(double d) {
+		Intervals res = empty();
+		lowerUpper(lu -> {
+			lu.apply(this).forEach(i -> {
+				Line line = i.getLine().up(d);
+				lu.apply(res).add(new LineInterval(i.getX1(), i.getX2(), line));
+			});
+		});
+		return res;
+	}
+
+	public Intervals div(Intervals intervals) {
+		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals);
+		Intervals res = empty();
+		biForEach(pair).forEach((f,g) -> {
+			
+			double x1 = f.getX1();
+			double x2 = f.getX2();
+			
+			double gLowerMin = Math.min(g.getLower().at(x1), g.getLower().at(x2));
+			double fLowerMin = Math.min(f.getLower().at(x1), f.getLower().at(x2));
+			double gUpperMax = Math.max(g.getUpper().at(x1), g.getUpper().at(x2));
+			double fUpperMax = Math.max(f.getUpper().at(x1), f.getUpper().at(x2));
+			boolean debug = true;
+			
+			if (0 <= fLowerMin && 0 < gLowerMin) {
+				print(debug, "11");
+				res.addAllLower(combineDiv(f.getLower(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineDiv(f.getUpper(), g.getLower(), x1, x2, x -> x.getUpper()));
+			}
+			if (fUpperMax <= 0 && 0 < gLowerMin) {
+				print(debug, "21");
+				res.addAllLower(combineDiv(f.getLower(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineDiv(f.getUpper(), g.getUpper(), x1, x2, x -> x.getUpper()));
+			}
+			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 < gLowerMin) {
+				print(debug, "31");
+				res.addAllLower(combineDiv(f.getLower(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineDiv(f.getUpper(), g.getLower(), x1, x2, x -> x.getUpper()));
+			}
+
+			if (0 <= fLowerMin && 0 >= gUpperMax) {
+				print(debug, "12");
+				res.addAllLower(combineDiv(f.getUpper(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineDiv(f.getLower(), g.getLower(), x1, x2, x -> x.getUpper()));
+			}
+			if (fUpperMax <= 0 && 0 >= gUpperMax) {
+				print(debug, "22");
+				res.addAllLower(combineDiv(f.getUpper(), g.getLower(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineDiv(f.getLower(), g.getUpper(), x1, x2, x -> x.getUpper()));
+			}
+			if ((fUpperMax > 0 && 0 > fLowerMin) && 0 >= gUpperMax) {
+				print(debug, "23");
+				res.addAllLower(combineDiv(f.getUpper(), g.getUpper(), x1, x2, x -> x.getLower()));
+				res.addAllUpper(combineDiv(f.getLower(), g.getUpper(), x1, x2, x -> x.getUpper()));
+			}
+			
+		});
+		return res;
+	}
+
+	private Collection<LineInterval> combineDiv(Line l1, Line l2, double x1, double x2, Function<Intervals, Collection<LineInterval>> lu) {
+		if (equals(l2.getK(), 0.0)) {
+			return list(new LineInterval(x1, x2, l1.unoFunc(x -> x / l2.getM())));
+		}
+		
+		final Function<Double, Double> func = x -> l1.at(x) / l2.at(x);
+		print(true, l1.getK() + " " + l2.getK());
+		final Function<Double, Double> funcd = x -> 
+			- l2.getK() * l1.at(x) / l2.at(x) / l2.at(x) + l1.getK() / l2.at(x);
+		
+		return lu.apply(Func.func(
+				list(x1, x2),
+				list(-1.0),
+				func,
+				funcd
+			));
 	}
 	
 }
