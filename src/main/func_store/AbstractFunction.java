@@ -2,6 +2,7 @@ package main.func_store;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import model.Point;
 import utils.Utils;
@@ -41,6 +42,10 @@ public abstract class AbstractFunction extends Utils {
 		return "Function [sp=" + sp + ", spozn=" + spozn + ", y=" + y + ", yd=" + yd + "]";
 	}
 
-	public abstract List<Point> getPoints();
+	public List<Point> getPoints() {
+		return getSp().stream().map(p -> {
+			return new Point(p, getY().apply(p));
+		}).collect(Collectors.toList());
+	}
 	
 }

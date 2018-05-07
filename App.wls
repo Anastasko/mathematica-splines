@@ -123,8 +123,8 @@ MakeDemo[0, "x^3 div sin inc 2", Function[x, x*x*x/12/(-Sin[x] + 1.2)]]
 MakeDemo[0, "x^3 times -sin", Function[x, -x*x*x*Sin[x]]]
 MakeDemo[0, "x^3 div 20 + 5sin", Function[x, x*x*x/20 + 5*Sin[x]]]
 MakeDemo[0, "x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]]]
-MakeDemo2[1, "splines", Function[x, x*x*x]]
-MakeDemo[1, "x3", Function[x, x*x*x]]
+MakeDemo2[1, "x3-splines", Function[x, x*x*x]]
+MakeDemo[1, "x3d", Function[x, 3*x*x]]
 MakeDemo[1, "-sin", func1]
 
 

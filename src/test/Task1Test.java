@@ -17,8 +17,9 @@ public class Task1Test extends TestUtils {
 	@Test
 	public void testX3Splines() {
 		AbstractFunction s = store.x2();
-		LinearIntervals is = build(s);
-		QuadraticIntervals q = build(is.mult(3), s.getPoints());
+		LinearIntervals is = build(s).mult(3);
+		output("x3d", is);
+		QuadraticIntervals q = build(is, store.x3().getPoints());
 		output("x3-splines", q);
 	}
 

@@ -3,6 +3,10 @@ package model;
 public class QuadraticInterval extends Interval {
 	
 	private Parabola parabola;
+	
+	public QuadraticInterval(Interval i, Parabola parabola) {
+		this(i.getX1(), i.getX2(), parabola);
+	}
 
 	public QuadraticInterval(double x1, double x2, Parabola parabola) {
 		super(x1, x2);

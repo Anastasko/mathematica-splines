@@ -21,5 +21,13 @@ public class Interval extends Utils {
 	public double getX2() {
 		return x2;
 	}
+	
+	public boolean contains(double x) {
+		return !less(x, x1) && !greater(x, x2);
+	}
+
+	public double middle() {
+		return (x1 + x2) /2;
+	}
 
 }
