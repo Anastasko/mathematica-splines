@@ -1,11 +1,11 @@
-package main.task1;
+package main.func_store;
 
 import java.util.List;
 
-import main.Interval;
+import model.Interval;
 import utils.Utils;
 
-public class X2FunctionFactory extends Utils {
+public class X3FunctionFactory extends Utils {
 	
 	public static AbstractFunction create(Interval i) {
 		double lower = i.getX1();
@@ -14,16 +14,19 @@ public class X2FunctionFactory extends Utils {
 		List<Double> spozn;
 		if (less(lower, 0) && less(0, upper)) {
 			sp = list(lower, 0.0, upper);
-			spozn = list(1.0, 1.0);
-		} else {
+			spozn = list(-1.0, 1.0);
+		} else if (less(0, upper)){
 			sp = list(lower, upper);
 			spozn = list(1.0);
+		} else {
+			sp = list(lower, upper);
+			spozn = list(-1.0);
 		}
 		return new AbstractFunction(
 			sp,
 			spozn,
-			x -> x*x,
-			x -> 2*x
+			x -> x*x*x,
+			x -> 3*x*x
 		);
 	}
 

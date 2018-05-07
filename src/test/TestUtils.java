@@ -5,20 +5,20 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import main.Interval;
-import main.Intervals;
-import main.LineInterval;
-import main.MyException;
-import main.task1.Func;
-import main.task1.AbstractFunction;
+import main.LinearIntervals;
+import main.LinearIntervalsBuilder;
+import main.func_store.AbstractFunction;
+import model.Interval;
+import model.LineInterval;
 import utils.Utils;
+import validation.MyException;
 import validation.Validator;
 
 public class TestUtils extends Utils {
 	
 	private static final String filePath = "/Users/lorry/data/";
 
-	protected void output(String name, Intervals intervals) {
+	protected void output(String name, LinearIntervals intervals) {
 		try {
 			Validator.validate(intervals);
 		} catch (MyException e) {
@@ -54,8 +54,8 @@ public class TestUtils extends Utils {
 		}
 	}
 
-	protected Intervals func(AbstractFunction s) {
-		return Func.func(s.getSp(), s.getSpozn(), s.getY(), s.getYd());
+	protected LinearIntervals build(AbstractFunction s) {
+		return LinearIntervalsBuilder.build(s.getSp(), s.getSpozn(), s.getY(), s.getYd());
 	}
 
 }

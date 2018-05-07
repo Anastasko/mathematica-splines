@@ -18,6 +18,19 @@ NodesToConditionalSegments := Function[nodes,
     conditionalSegments
 ]
 
+NodesToConditionalSegments2 := Function[nodes,
+	conditionalSegments = {};
+	For[i=1, i<=Length[nodes]-1, i++,
+		x0 = nodes[[i]][[1]];
+		a = nodes[[i]][[2]];
+		b = nodes[[i]][[3]];
+		c = nodes[[i]][[4]];
+		nextx0 = nodes[[i+1]][[1]];
+		AppendTo[conditionalSegments, {a*x*x+b*x+c, x<nextx0}];
+	];
+    conditionalSegments
+]
+
 MyVisualize := Function[{res, y, le, ri},
 
 	lowerNodes = res[[1]];
@@ -42,6 +55,31 @@ MyVisualize := Function[{res, y, le, ri},
 	]
 ];
 
+MyVisualize2 := Function[{res, y, le, ri},
+
+	lowerNodes = res[[1]];
+	upperNodes = res[[2]];
+	
+	lowerSegments = NodesToConditionalSegments2[lowerNodes];
+	upperSegments = NodesToConditionalSegments2[upperNodes];
+
+	lo[x_] := Piecewise[lowerSegments];
+	up[x_] := Piecewise[upperSegments];
+	pointDots = {};
+	For[lu=1, lu<=2, ++lu,
+	For[i=1,i<=Length[res[[lu]]],++i,
+		px = res[[lu]][[i]][[1]];
+		a = res[[lu]][[i]][[2]];
+		b = res[[lu]][[i]][[3]];
+		c = res[[lu]][[i]][[4]];
+		AppendTo[pointDots, {px, a*px*px+b*px+c}];
+	];
+	];
+	Plot[{lo[x], up[x], y[x]}, {x, le, ri}, 
+	Epilog -> {Red, PointSize@Medium, Point[pointDots]}
+	]
+];
+
 MakeDemo := Function[{show, name, yfunc},
 	If[show == 1,
 	    points = Import["data/" <> name <> "-bounds.txt", "Table"][[1]];
@@ -51,6 +89,18 @@ MakeDemo := Function[{show, name, yfunc},
 		MyPrint[res];
 		Print[Text[Style[yfunc, 16]]];
 		MyVisualize[res, yfunc, First[points], Last[points]]
+	]
+];
+
+MakeDemo2 := Function[{show, name, yfunc},
+	If[show == 1,
+	    points = Import["data/" <> name <> "-bounds.txt", "Table"][[1]];
+		lol = Import["data/" <> name <> "-lower.txt", "Table"];
+		upu = Import["data/" <> name <> "-upper.txt", "Table"];
+		res = {lol, upu};
+		MyPrint[res];
+		Print[Text[Style[yfunc, 16]]];
+		MyVisualize2[res, yfunc, First[points], Last[points]]
 	]
 ];
 
@@ -67,17 +117,13 @@ func1d := Function[x, -Cos[x]];
 func2 := Function[x, x*x*x];
 func2d := Function[x, 3*x*x];
 
-ff[x_] = (x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3)
+ff[x_] = (x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3);
 
-Plot[{
-ff[x] - 0.7*((-12 - ff[x])*Sign[-12 - ff[x]])^0.5, 
-ff[x] + 0.7*((-12 - ff[x])*Sign[-12 - ff[x]])^0.5,
-ff[x]}, {x, -2.65, 4.54}]
-
-MakeDemo[1, "x^3 div sin inc 2", Function[x, x*x*x/12/(-Sin[x] + 1.2)]]
-MakeDemo[1, "x^3 times -sin", Function[x, -x*x*x*Sin[x]]]
-MakeDemo[1, "x^3 div 20 + 5sin", Function[x, x*x*x/20 + 5*Sin[x]]]
-MakeDemo[1, "x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]]]
+MakeDemo[0, "x^3 div sin inc 2", Function[x, x*x*x/12/(-Sin[x] + 1.2)]]
+MakeDemo[0, "x^3 times -sin", Function[x, -x*x*x*Sin[x]]]
+MakeDemo[0, "x^3 div 20 + 5sin", Function[x, x*x*x/20 + 5*Sin[x]]]
+MakeDemo[0, "x^3 div 20 - 5sin", Function[x, x*x*x/20 - 5*Sin[x]]]
+MakeDemo2[1, "splines", Function[x, x*x*x]]
 MakeDemo[1, "x3", Function[x, x*x*x]]
 MakeDemo[1, "-sin", func1]
 
@@ -85,4 +131,4 @@ MakeDemo[1, "-sin", func1]
 
 
 
-
+\[AliasDelimiter]\[AliasDelimiter]

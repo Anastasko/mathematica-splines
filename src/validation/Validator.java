@@ -2,10 +2,9 @@ package validation;
 
 import java.util.List;
 
-import main.Intervals;
-import main.Line;
-import main.LineInterval;
-import main.MyException;
+import main.LinearIntervals;
+import model.Line;
+import model.LineInterval;
 import utils.Utils;
 
 public class Validator extends Utils {
@@ -35,7 +34,7 @@ public class Validator extends Utils {
 		if (Double.isNaN(l.getM())) fail("m is NaN");
 	}
 
-	public static void validate(Intervals i) {
+	public static void validate(LinearIntervals i) {
 		validate(i.getLower());
 		validate(i.getUpper());
 //		for(LinesInterval in : i.intervals()) {

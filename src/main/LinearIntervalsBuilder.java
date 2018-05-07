@@ -1,19 +1,18 @@
-package main.task1;
+package main;
 
 import java.util.List;
 import java.util.function.Function;
 
-import main.Interval;
-import main.Intervals;
-import main.Line;
-import main.LineInterval;
-import main.MyException;
-import main.Point;
+import model.Interval;
+import model.Line;
+import model.LineInterval;
+import model.Point;
 import utils.Utils;
+import validation.MyException;
 
-public class Func extends Utils {
+public class LinearIntervalsBuilder extends Utils {
 
-	public static Intervals func(
+	public static LinearIntervals build(
 			List<Double> sp,
 			List<Double> spozn,
 			Function<Double, Double> y,
@@ -27,7 +26,7 @@ public class Func extends Utils {
 				throw new MyException("sp[" + i + "] == sp[" + (i+1) + "]\n" + sp);
 			}
 		}
-		Intervals res = new Intervals(new Interval(first(sp), last(sp)));
+		LinearIntervalsImpl res = new LinearIntervalsImpl(new Interval(first(sp), last(sp)));
 		for(int i=0; i<spozn.size(); ++i) {
 			double x1 = sp.get(i);
 			double x2 = sp.get(i+1);

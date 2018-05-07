@@ -8,12 +8,17 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import main.task1.Func;
+import model.Interval;
+import model.Line;
+import model.LineInterval;
+import model.LinesInterval;
+import model.Pair;
+import model.Point;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import utils.BiIterable;
 import utils.Utils;
 
-public class Intervals extends Utils {
+public class LinearIntervalsImpl extends Utils implements LinearIntervals {
 	
 	private Interval interval;
 
@@ -21,7 +26,7 @@ public class Intervals extends Utils {
 	
 	private List<LineInterval> upper = new ArrayList<>();
 	
-	public Intervals(Interval interval) {
+	public LinearIntervalsImpl(Interval interval) {
 		this.interval = interval;
 	}
 
@@ -33,19 +38,19 @@ public class Intervals extends Utils {
 		return upper;
 	}
 
-	public Intervals plus(Intervals intervals) {
+	public LinearIntervals plus(LinearIntervals intervals) {
 		return biFunc(intervals, (a,b) -> a+b);
 	}
 	
-	public Intervals minus(Intervals intervals) {
+	public LinearIntervals minus(LinearIntervals intervals) {
 		return plus(intervals.mult(-1.0));
 	}
 	
-	public Intervals div(double x) {
+	public LinearIntervals div(double x) {
 		return unoFunc(a -> a/x, x < 0);
 	}
 	
-	public Intervals mult(double x) {
+	public LinearIntervals mult(double x) {
 		return unoFunc(a -> a*x, x < 0);
 	}
 	
@@ -55,9 +60,9 @@ public class Intervals extends Utils {
 		upper = temp;
 	}
 	
-	public Intervals mult(Intervals intervals) {
-		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
-		Intervals res = empty();
+	public LinearIntervals mult(LinearIntervals intervals) {
+		Pair<LinearIntervals, LinearIntervals> pair = normalize(this.addZeroes(), intervals.addZeroes());
+		LinearIntervalsImpl res = empty();
 		biForEach(pair).forEach((f,g) -> {
 			
 			double x1 = f.getX1();
@@ -119,7 +124,7 @@ public class Intervals extends Utils {
 		return res;
 	}
 
-	private List<LineInterval> combineMult(Line l1, Line l2, double x1, double x2, Function<Intervals, List<LineInterval>> lu) {
+	private List<LineInterval> combineMult(Line l1, Line l2, double x1, double x2, Function<LinearIntervals, List<LineInterval>> lu) {
 		if (equals(l1.getK(), .0)) {
 			return list(new LineInterval(x1, x2, l2.unoFunc(x -> x*l1.getM())));
 		}
@@ -139,7 +144,7 @@ public class Intervals extends Utils {
 			     (2 * l1.getK() * l2.getK()), 0);
 		if (less(i.getX(), x2) && greater(i.getX(), x1)) {
 			
-			return lu.apply(Func.func(
+			return lu.apply(LinearIntervalsBuilder.build(
 					list(x1, i.getX(), x2),
 					list(l1.getK() * l2.getK(), l1.getK() * l2.getK()),
 					func,
@@ -147,7 +152,7 @@ public class Intervals extends Utils {
 				));
 		}
 		
-		return lu.apply(Func.func(
+		return lu.apply(LinearIntervalsBuilder.build(
 				list(x1, x2),
 				list(l1.getK() * l2.getK()),
 				func,
@@ -155,8 +160,8 @@ public class Intervals extends Utils {
 			));
 	}
 
-	private Intervals unoFunc(Function<Double, Double> unoFunc, boolean swap) {
-		Intervals res = empty();
+	private LinearIntervals unoFunc(Function<Double, Double> unoFunc, boolean swap) {
+		LinearIntervalsImpl res = empty();
 		lowerUpper(lu -> {
 			lu.apply(this).forEach(i -> {
 				Line line = i.getLine().unoFunc(unoFunc);
@@ -167,9 +172,9 @@ public class Intervals extends Utils {
 		return res;
 	}
 	
-	private Intervals biFunc(Intervals intervals, BiFunction<Double, Double, Double> biFunc) {
-		Intervals res = empty();
-		Pair<Intervals, Intervals> pair = normalize(this, intervals);
+	private LinearIntervals biFunc(LinearIntervals intervals, BiFunction<Double, Double, Double> biFunc) {
+		LinearIntervals res = empty();
+		Pair<LinearIntervals, LinearIntervals> pair = normalize(this, intervals);
 		lowerUpper(lu -> {
 			biForEach(lu, pair).forEach((i1, i2) -> {
 				Line line = new Line(
@@ -182,14 +187,14 @@ public class Intervals extends Utils {
 	}
 	
 	private BiIterable<LineInterval> biForEach(
-			Function<Intervals, List<LineInterval>> lu,
-			Pair<Intervals, Intervals> pair) {
+			Function<LinearIntervals, List<LineInterval>> lu,
+			Pair<LinearIntervals, LinearIntervals> pair) {
 		List<LineInterval> list1 = lu.apply(pair.getOne());
 		List<LineInterval> list2 = lu.apply(pair.getTwo());
 		return new BiIterable<LineInterval>(list1, list2);
 	}
 	
-	private BiIterable<LinesInterval> biForEach(Pair<Intervals, Intervals> pair) {
+	private BiIterable<LinesInterval> biForEach(Pair<LinearIntervals, LinearIntervals> pair) {
 		List<LinesInterval> list1 = pair.getOne().intervals();
 		List<LinesInterval> list2 = pair.getTwo().intervals();
 		return new BiIterable<LinesInterval>(list1, list2);
@@ -208,9 +213,9 @@ public class Intervals extends Utils {
 	 * на вхід два обмежники
 	 * на вихід ті ж обмежники зі всіма точками (точки взяті з одного в інший і навпаки)
 	 */
-	private static Pair<Intervals, Intervals> normalize(Intervals A, Intervals B) {
-		Intervals one = new Intervals(A.getInterval());
-		Intervals two = new Intervals(B.getInterval());
+	private static Pair<LinearIntervals, LinearIntervals> normalize(LinearIntervals A, LinearIntervals B) {
+		LinearIntervalsImpl one = new LinearIntervalsImpl(A.getInterval());
+		LinearIntervalsImpl two = new LinearIntervalsImpl(B.getInterval());
 		lowerUpper(lu -> {
 			List<LineInterval> a = lu.apply(A);
 			List<LineInterval> b = lu.apply(B);
@@ -248,8 +253,8 @@ public class Intervals extends Utils {
 	 * на вхід @this обмежник
 	 * на вихід той же обмежник з доданими нуль-точками
 	 */
-	private Intervals addZeroes() {
-		Intervals res = empty();
+	public LinearIntervals addZeroes() {
+		LinearIntervals res = empty();
 		lowerUpper(lu -> {
 			forEach(lu.apply(this), i -> {
 				Point p = i.getIntersectZero();
@@ -265,15 +270,15 @@ public class Intervals extends Utils {
 		return res;
 	}
 
-	private Intervals empty() {
-		return new Intervals(getInterval());
+	private LinearIntervalsImpl empty() {
+		return new LinearIntervalsImpl(getInterval());
 	}
 	
-	public void addAllLower(Collection<LineInterval> i) {
+	private void addAllLower(Collection<LineInterval> i) {
 		i.forEach(one -> addLower(one));
 	}
 	
-	public void addAllUpper(Collection<LineInterval> i) {
+	private void addAllUpper(Collection<LineInterval> i) {
 		i.forEach(one -> addUpper(one));
 	}
 	
@@ -285,7 +290,7 @@ public class Intervals extends Utils {
 		add(l -> l.getUpper(), "upper", i);
 	}
 	
-	private void add(Function<Intervals, List<LineInterval>> lu, String name, LineInterval i) {
+	private void add(Function<LinearIntervals, List<LineInterval>> lu, String name, LineInterval i) {
 		List<LineInterval> list = lu.apply(this);
 		if (list.size() > 0 && less(i.getX1(), last(list).getX1())) {
 			fail("how", "i.x1=" + i.getX1(), "last(" + name + ").x1=" + last(list).getX1());
@@ -311,8 +316,8 @@ public class Intervals extends Utils {
 		return interval;
 	}
 
-	public Intervals plus(double d) {
-		Intervals res = empty();
+	public LinearIntervals plus(double d) {
+		LinearIntervals res = empty();
 		lowerUpper(lu -> {
 			lu.apply(this).forEach(i -> {
 				Line line = i.getLine().up(d);
@@ -322,9 +327,9 @@ public class Intervals extends Utils {
 		return res;
 	}
 
-	public Intervals div(Intervals intervals) {
-		Pair<Intervals, Intervals> pair = normalize(this.addZeroes(), intervals);
-		Intervals res = empty();
+	public LinearIntervals div(LinearIntervals intervals) {
+		Pair<LinearIntervals, LinearIntervals> pair = normalize(this.addZeroes(), intervals);
+		LinearIntervalsImpl res = empty();
 		biForEach(pair).forEach((f,g) -> {
 			
 			double x1 = f.getX1();
@@ -372,7 +377,7 @@ public class Intervals extends Utils {
 		return res;
 	}
 
-	private Collection<LineInterval> combineDiv(Line l1, Line l2, double x1, double x2, Function<Intervals, Collection<LineInterval>> lu) {
+	private Collection<LineInterval> combineDiv(Line l1, Line l2, double x1, double x2, Function<LinearIntervals, Collection<LineInterval>> lu) {
 		if (equals(l2.getK(), 0.0)) {
 			return list(new LineInterval(x1, x2, l1.unoFunc(x -> x / l2.getM())));
 		}
@@ -382,7 +387,7 @@ public class Intervals extends Utils {
 		final Function<Double, Double> funcd = x -> 
 			- l2.getK() * l1.at(x) / l2.at(x) / l2.at(x) + l1.getK() / l2.at(x);
 		
-		return lu.apply(Func.func(
+		return lu.apply(LinearIntervalsBuilder.build(
 				list(x1, x2),
 				list(-1.0),
 				func,

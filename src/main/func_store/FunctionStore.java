@@ -1,6 +1,6 @@
-package main.task1;
+package main.func_store;
 
-import main.Interval;
+import model.Interval;
 import utils.Utils;
 
 public class FunctionStore extends Utils {

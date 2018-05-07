@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import main.Const;
-import main.Line;
-import main.Point;
+import model.Line;
+import model.Point;
 
 public class LineTest {
 

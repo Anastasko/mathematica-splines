@@ -1,4 +1,4 @@
-package main.task1;
+package main.func_store;
 
 import java.util.List;
 

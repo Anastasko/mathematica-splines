@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import main.Intervals;
-import main.LineInterval;
-import main.MyException;
+import main.LinearIntervals;
+import model.LineInterval;
+import validation.MyException;
 
 public class Utils extends Compare {
 	
@@ -36,7 +36,7 @@ public class Utils extends Compare {
 		Collections.sort(list);
 	}
 	
-	public static void lowerUpper(Consumer<Function<Intervals, List<LineInterval>>> consumer) {
+	public static void lowerUpper(Consumer<Function<LinearIntervals, List<LineInterval>>> consumer) {
 		consumer.accept(x -> x.getLower());
 		consumer.accept(x -> x.getUpper());
 	}
