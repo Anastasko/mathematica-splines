@@ -3,6 +3,7 @@ package test;
 import org.junit.Test;
 
 import main.LinearIntervals;
+import main.QuadraticIntervals;
 import main.func_store.AbstractFunction;
 import main.func_store.FunctionStore;
 
@@ -10,6 +11,14 @@ public class Task1Test extends TestUtils {
 	
 	private static FunctionStore store = new FunctionStore(-Pi, 2*Pi);
 	
+	@Test
+	public void testX3Splines() {
+		AbstractFunction s = store.x2();
+		LinearIntervals is = build(s);
+		QuadraticIntervals q = build(is.mult(3));
+		output("x3-splines", q);
+	}
+
 	@Test
 	public void testSin() {
 		AbstractFunction sin = store.sin();
