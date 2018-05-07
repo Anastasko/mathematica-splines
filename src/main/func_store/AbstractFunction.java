@@ -3,9 +3,10 @@ package main.func_store;
 import java.util.List;
 import java.util.function.Function;
 
+import model.Point;
 import utils.Utils;
 
-public class AbstractFunction extends Utils {
+public abstract class AbstractFunction extends Utils {
 	
 	private List<Double> sp;
 	private List<Double> spozn;
@@ -39,5 +40,7 @@ public class AbstractFunction extends Utils {
 	public String toString() {
 		return "Function [sp=" + sp + ", spozn=" + spozn + ", y=" + y + ", yd=" + yd + "]";
 	}
+
+	public abstract List<Point> getPoints();
 	
 }

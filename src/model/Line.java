@@ -1,5 +1,6 @@
 package model;
 
+import java.util.List;
 import java.util.function.Function;
 
 import utils.Utils;
@@ -67,6 +68,12 @@ public class Line extends Utils {
 	
 	public Line up(Double up) {
 		return new Line(k, m + up);
+	}
+
+	public List<Point> findRoots() {
+		if (equals(k, 0)) return list();
+		double point = -m / k;
+		return list(new Point(point, at(point)));
 	}
 	
 }

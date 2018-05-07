@@ -22,11 +22,9 @@ public class X3FunctionFactory extends Utils {
 			sp = list(lower, upper);
 			spozn = list(-1.0);
 		}
-		return new AbstractFunction(
+		return new X3Function(
 			sp,
-			spozn,
-			x -> x*x*x,
-			x -> 3*x*x
+			spozn
 		);
 	}
 

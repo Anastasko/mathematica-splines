@@ -66,11 +66,9 @@ public class SinFunctionFactory extends Utils {
 			}
 		});
 		sp.add(upper);
-		return new AbstractFunction(
+		return new SinFunction(
 			sp,
-			spozn,
-			x -> Math.sin(x),
-			x -> Math.cos(x)
+			spozn
 		);
 	}
 	

@@ -12,6 +12,7 @@ import main.QuadraticIntervalsBuilder;
 import main.func_store.AbstractFunction;
 import model.Interval;
 import model.LineInterval;
+import model.Point;
 import model.QuadraticInterval;
 import utils.Utils;
 import validation.MyException;
@@ -35,7 +36,7 @@ public class TestUtils extends Utils {
 		print(name + " OK!");
 	}
 	
-	private void output(String name, QuadraticIntervals q) {
+	protected void output(String name, QuadraticIntervals q) {
 //		try {
 //			Validator.validate(intervals);
 //		} catch (MyException e) {
@@ -82,8 +83,8 @@ public class TestUtils extends Utils {
 		return LinearIntervalsBuilder.build(s.getSp(), s.getSpozn(), s.getY(), s.getYd());
 	}
 	
-	protected QuadraticIntervals build(LinearIntervals i) {
-		return QuadraticIntervalsBuilder.build(i);
+	protected QuadraticIntervals build(LinearIntervals i, List<Point> points) {
+		return QuadraticIntervalsBuilder.build(i, points);
 	}
 
 }

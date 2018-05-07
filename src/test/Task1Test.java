@@ -9,13 +9,16 @@ import main.func_store.FunctionStore;
 
 public class Task1Test extends TestUtils {
 	
-	private static FunctionStore store = new FunctionStore(-Pi, 2*Pi);
+	private static double LEFT = -Pi;
+	private static double RIGHT = 2*Pi;
+	
+	private static FunctionStore store = new FunctionStore(LEFT, RIGHT);
 	
 	@Test
 	public void testX3Splines() {
 		AbstractFunction s = store.x2();
 		LinearIntervals is = build(s);
-		QuadraticIntervals q = build(is.mult(3));
+		QuadraticIntervals q = build(is.mult(3), s.getPoints());
 		output("x3-splines", q);
 	}
 

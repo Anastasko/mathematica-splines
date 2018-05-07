@@ -19,11 +19,9 @@ public class X2FunctionFactory extends Utils {
 			sp = list(lower, upper);
 			spozn = list(1.0);
 		}
-		return new AbstractFunction(
+		return new X2Function(
 			sp,
-			spozn,
-			x -> x*x,
-			x -> 2*x
+			spozn
 		);
 	}
 
