@@ -1,11 +1,14 @@
 package test;
 
+import java.util.stream.Collectors;
+
 import org.junit.Test;
 
 import main.LinearIntervals;
 import main.QuadraticIntervals;
 import main.func_store.AbstractFunction;
 import main.func_store.FunctionStore;
+import model.Point;
 
 public class Task1Test extends TestUtils {
 	
@@ -24,10 +27,12 @@ public class Task1Test extends TestUtils {
 	}
 
 	@Test
-	public void testSin() {
+	public void testCosSplines() {
 		AbstractFunction sin = store.sin();
-		LinearIntervals is = build(sin);
-		output("-sin", is.mult(-1.0));
+		LinearIntervals is = build(sin).mult(-1.0);
+		output("-sin", is);
+		QuadraticIntervals q = build(is, store.cos().getPoints());
+		output("cos-splines", q);
 	}
 
 	@Test
@@ -47,19 +52,31 @@ public class Task1Test extends TestUtils {
 	@Test
 	public void testPlus() {
 		AbstractFunction s1 = store.sin();
-		AbstractFunction s2 = store.x3();
+		AbstractFunction s2 = store.x2();
 		LinearIntervals is1 = build(s1);
 		LinearIntervals is2 = build(s2);
-		output("x^3 div 20 + 5sin", is1.mult(5).plus(is2.div(20)));
+		LinearIntervals is = is1.mult(5).plus(is2.div(10));
+		output("x^2 div 10 + 5sin", is);
+		QuadraticIntervals q = build(is, store.cos().getPoints().stream().map(p -> {
+			double x = p.getX();
+			return new Point(x, x*x*x / 30.0 - 5 * Math.cos(x));
+		}).collect(Collectors.toList()));
+		output("x^3 div 30 - 5cos", q);
 	}
 
 	@Test
 	public void testMinus() {
 		AbstractFunction s1 = store.sin();
-		AbstractFunction s2 = store.x3();
+		AbstractFunction s2 = store.x2();
 		LinearIntervals is1 = build(s1);
 		LinearIntervals is2 = build(s2);
-		output("x^3 div 20 - 5sin", is2.div(20).minus(is1.mult(5)));
+		LinearIntervals is = is2.div(10).minus(is1.mult(5));
+		output("x^2 div 10 - 5sin", is);
+		QuadraticIntervals q = build(is, store.cos().getPoints().stream().map(p -> {
+			double x = p.getX();
+			return new Point(x, x*x*x / 30.0 + 5 * Math.cos(x));
+		}).collect(Collectors.toList()));
+		output("x^3 div 30 + 5cos", q);
 	}
 	
 	@Test

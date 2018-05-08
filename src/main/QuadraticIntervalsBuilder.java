@@ -34,7 +34,7 @@ public class QuadraticIntervalsBuilder extends Utils {
 		if (r - l != 1) fail("r - l != 1");
 		LinesInterval li = iis.get(l);
 		LinesInterval ri = iis.get(r);
-		print("ay=" + pl.getY());
+		print("pl = " + pl + " pr = " + pr);
 		Parabola pnA = new Parabola(0.5*li.getLower().getK(), li.getLower().getM(), 0);
 		pnA = pnA.up(-pnA.at(pl.getX()) + pl.getY());
 		
@@ -47,21 +47,26 @@ public class QuadraticIntervalsBuilder extends Utils {
 		Parabola pnB = new Parabola(0.5*ri.getUpper().getK(), ri.getUpper().getM(), 0);
 		pnB = pnB.up(-pnB.at(pr.getX()) + pr.getY());
 		
+		print("X=" + pvA.at(pl.getX()));
+		print("K=" + pvA);
+		
+		Interval pp = i(pl.getX(), pr.getX());
+		
 		List<Point> lowerC = pnA.cross(pnB);
 		List<Point> upperC = pvA.cross(pvB);
 		
 		if (lowerC.size() == 0) {
-			fail(lowerC, pnA, pnB);
+			double x = pp.middle();
+			lowerC = list(new Point(x, pnA.at(x)));
 		}
 		
 		if (upperC.size() == 0) {
-			fail(upperC, pvA, pvB);
+			double x = pp.middle();
+			upperC = list(new Point(x, pvA.at(x)));
 		}
 		
 		Point cn = lowerC.get(0);
 		Point cv = upperC.get(0);
-		
-		Interval pp = i(pl.getX(), pr.getX());
 
 		if (!pp.contains(cn.getX())) {
 			cn = lowerC.get(1);

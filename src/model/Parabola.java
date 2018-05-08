@@ -80,13 +80,17 @@ public class Parabola extends Utils {
 	}
 
 	private List<Point> findRoots(Function<Double, Double> at) {
-		if (equals(a, 0)) return new Line(b, c).findRoots();
+		if (equals(a, 0)) {
+			return new Line(b, c).findRoots();
+		}
 		double D = b*b - 4*a*c;
 		if (equals(D, 0)) {
 			double p = -b / (2*a);
 			return list(new Point(p, at(p)));
 		}
-		if (D < 0) return list();
+		if (D < 0) {
+			return list();
+		}
 		double sqrtD = Math.sqrt(D);
 		double p1 = (-b + sqrtD) / (2*a);
 		double p2 = (-b - sqrtD) / (2*a);

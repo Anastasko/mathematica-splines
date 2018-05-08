@@ -14,6 +14,10 @@ public class FunctionStore extends Utils {
 	public AbstractFunction sin() {
 		return SinFunctionFactory.create(interval.getX1(), interval.getX2());
 	}
+	
+	public AbstractFunction cos() {
+		return CosFunctionFactory.create(interval.getX1(), interval.getX2());
+	}
 
 	public AbstractFunction x3() {
 		return X3FunctionFactory.create(interval);
