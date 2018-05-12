@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.function.Function;
 
 import main.LinearIntervals;
 import main.LinearIntervalsBuilder;
@@ -12,7 +13,6 @@ import main.QuadraticIntervalsBuilder;
 import main.func_store.AbstractFunction;
 import model.Interval;
 import model.LineInterval;
-import model.Point;
 import model.QuadraticInterval;
 import utils.Utils;
 import validation.MyException;
@@ -87,8 +87,8 @@ public class TestUtils extends Utils {
 		return new LinearIntervalsBuilder(f.getSp()).build(f);
 	}
 	
-	protected QuadraticIntervals build(LinearIntervals i, List<Point> points) {
-		return QuadraticIntervalsBuilder.build(i, points);
+	protected QuadraticIntervals build(LinearIntervals i, Function<Double, Double> func) {
+		return QuadraticIntervalsBuilder.build(i, func);
 	}
 	
 	protected List<Double> points(AbstractFunction s1, AbstractFunction s2) {

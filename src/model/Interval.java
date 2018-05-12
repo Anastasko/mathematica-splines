@@ -26,8 +26,9 @@ public class Interval extends Utils {
 		return !less(x, x1) && !greater(x, x2);
 	}
 
-	public double middle() {
-		return (x1 + x2) /2;
+	public double ratio(double r) {
+		if (r < 0 || r > 1) fail("bad arg exception");
+		return x1 + (x2 - x1) * r;
 	}
 
 }

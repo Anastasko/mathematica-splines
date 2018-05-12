@@ -1,6 +1,7 @@
 package main;
 
 import java.util.List;
+import java.util.function.Function;
 
 import model.Interval;
 import model.LinesInterval;
@@ -11,57 +12,48 @@ import utils.Utils;
 
 public class QuadraticIntervalsBuilder extends Utils {
 
-	public static QuadraticIntervals build(LinearIntervals intervals, List<Point> points) {
-		
+	public static QuadraticIntervals build(LinearIntervals intervals, Function<Double, Double> y) {
 		QuadraticIntervals res = new QuadraticIntervalsImpl(intervals.getInterval());
-		int l = 0;
-		int r = 1;
-		print(points);
 		List<LinesInterval> iis = intervals.normalize().intervals();
-		int len = iis.size();
-		for(int i=0; i<points.size()-1; ++i) {
-			Point pl = points.get(i);
-			Point pr = points.get(i+1);
-			while (r < len && iis.get(r).getX2() < pr.getX()) ++r;
-			while (l < len && iis.get(l).getX1() < pl.getX()) ++l;
-			process(iis, pl, pr, l, r, res);
-		}
+		iis.forEach(li -> {
+			process(li, res, y);
+		});
 		return res;
 	}
 
-	private static void process(List<LinesInterval> iis, Point pl, Point pr, int l, int r, QuadraticIntervals res) {
-		print("l=" + l + " r=" + r);
-//		if (r - l != 1) fail("r - l != 1");
-		LinesInterval li = iis.get(l);
-		LinesInterval ri = iis.get(r);
-		print("pl = " + pl + " pr = " + pr);
+	private static void process(LinesInterval li, QuadraticIntervals res, Function<Double, Double> y) {
+		
+		Point pl = new Point(li.getX1(), y.apply(li.getX1()));
+		Point pr = new Point(li.getX2(), y.apply(li.getX2()));
+		
 		Parabola pnA = new Parabola(0.5*li.getLower().getK(), li.getLower().getM(), 0);
 		pnA = pnA.up(-pnA.at(pl.getX()) + pl.getY());
 		
 		Parabola pvA = new Parabola(0.5*li.getUpper().getK(), li.getUpper().getM(), 0);
 		pvA = pvA.up(-pvA.at(pl.getX()) + pl.getY());
 		
-		Parabola pvB = new Parabola(0.5*ri.getLower().getK(), ri.getLower().getM(), 0);
+		Parabola pvB = new Parabola(0.5*li.getLower().getK(), li.getLower().getM(), 0);
 		pvB = pvB.up(-pvB.at(pr.getX()) + pr.getY());
 		
-		Parabola pnB = new Parabola(0.5*ri.getUpper().getK(), ri.getUpper().getM(), 0);
+		Parabola pnB = new Parabola(0.5*li.getUpper().getK(), li.getUpper().getM(), 0);
 		pnB = pnB.up(-pnB.at(pr.getX()) + pr.getY());
-		
-		print("X=" + pvA.at(pl.getX()));
-		print("K=" + pvA);
 		
 		Interval pp = i(pl.getX(), pr.getX());
 		
 		List<Point> lowerC = pnA.cross(pnB);
 		List<Point> upperC = pvA.cross(pvB);
 		
-		if (lowerC.size() == 0) {
-			double x = pp.middle();
+		if (lowerC.size() == 0) 
+		{
+			fail("should not fail");
+			double x = li.getX2();
 			lowerC = list(new Point(x, pnA.at(x)));
 		}
 		
-		if (upperC.size() == 0) {
-			double x = pp.middle();
+		if (upperC.size() == 0) 
+		{
+			fail("should not fail");
+			double x = li.getX2();
 			upperC = list(new Point(x, pvA.at(x)));
 		}
 		

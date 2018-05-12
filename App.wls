@@ -98,7 +98,7 @@ MakeDemo2 := Function[{show, name, yfunc},
 		lol = Import["data/" <> name <> "-lower.txt", "Table"];
 		upu = Import["data/" <> name <> "-upper.txt", "Table"];
 		res = {lol, upu};
-		MyPrint[res];
+		(* MyPrint[res]; *)
 		Print[Text[Style[yfunc, 16]]];
 		MyVisualize2[res, yfunc, First[points], Last[points]]
 	]
@@ -113,7 +113,7 @@ MyPrint := Function[arg,
 
 ff[x_] = (x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3);
 
-MakeDemo[1, "x^2 div 2 sin inc 2", Function[x, x*x/2/(Sin[x] + 1.2)]]
+MakeDemo[0, "x^2 div 2 sin inc 2", Function[x, x*x/2/(Sin[x] + 1.2)]]
 MakeDemo[0, "sin div (cos + 1.2)", Function[x, Sin[x]/(Cos[x] + 1.2)]]
 MakeDemo2[1, "(x^2-2) cos - 2x sin", Function[x, (x^2-2)*Cos[x] - 2x*Sin[x]]]
 MakeDemo[1, "x^2 times -sin", Function[x, -x*x*Sin[x]]]

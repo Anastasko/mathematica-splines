@@ -1,7 +1,5 @@
 package test;
 
-import java.util.stream.Collectors;
-
 import org.junit.Test;
 
 import main.LinearIntervals;
@@ -9,12 +7,17 @@ import main.LinearIntervalsBuilder;
 import main.QuadraticIntervals;
 import main.func_store.AbstractFunction;
 import main.func_store.FunctionStore;
-import model.Point;
 
 public class Task1Test extends TestUtils {
 	
-	private static double LEFT = -Pi;
+	private static double LEFT = -4*Pi;
 	private static double RIGHT = 2*Pi;
+	
+	private boolean combinePoints = false;
+	
+	private LinearIntervals build(LinearIntervalsBuilder builder, AbstractFunction s) {
+		return combinePoints ? builder.build(s) : build(s);
+	}
 	
 	private static FunctionStore store = new FunctionStore(LEFT, RIGHT);
 	
@@ -23,7 +26,7 @@ public class Task1Test extends TestUtils {
 		AbstractFunction s = store.x2();
 		LinearIntervals is = build(s).mult(3);
 		output("x3d", is);
-		QuadraticIntervals q = build(is, store.x3().getPoints());
+		QuadraticIntervals q = build(is, x -> x*x*x);
 		output("x3-splines", q);
 	}
 
@@ -32,7 +35,7 @@ public class Task1Test extends TestUtils {
 		AbstractFunction sin = store.sin();
 		LinearIntervals is = build(sin).mult(-1.0);
 		output("-sin", is);
-		QuadraticIntervals q = build(is, store.cos().getPoints());
+		QuadraticIntervals q = build(is, Math::cos);
 		output("cos-splines", q);
 	}
 
@@ -55,22 +58,20 @@ public class Task1Test extends TestUtils {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x2();
 		LinearIntervalsBuilder builder = builder(points(s1, s2));
-		LinearIntervals is1 = builder.build(s1);
-		LinearIntervals is2 = builder.build(s2);
+		LinearIntervals is1 = build(builder, s1);
+		LinearIntervals is2 = build(builder, s2);
 		LinearIntervals is = is1.mult(5).plus(is2.div(10));
 		output("x^2 div 10 + 5sin", is);
-		QuadraticIntervals q = build(is, points(s1, s2).stream().map(x -> {
-			return new Point(x, x*x*x / 30.0 - 5 * Math.cos(x));
-		}).collect(Collectors.toList()));
+		QuadraticIntervals q = build(is, x -> x*x*x / 30.0 - 5 * Math.cos(x));
 		output("x^3 div 30 - 5cos", q);
 	}
-	
+
 	@Test
 	public void testX2onSinPoints() {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x2();
 		LinearIntervalsBuilder builder = builder(points(s1, s2));
-		LinearIntervals is2 = builder.build(s2);
+		LinearIntervals is2 = build(builder, s2);
 		LinearIntervals is = is2.div(10);
 		output("x^2 div 10 on sin", is);
 	}
@@ -80,13 +81,11 @@ public class Task1Test extends TestUtils {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x2();
 		LinearIntervalsBuilder builder = builder(points(s1, s2));
-		LinearIntervals is1 = builder.build(s1);
-		LinearIntervals is2 = builder.build(s2);
+		LinearIntervals is1 = build(builder, s1);
+		LinearIntervals is2 = build(builder, s2);
 		LinearIntervals is = is2.div(10).minus(is1.mult(5));
 		output("x^2 div 10 - 5sin", is);
-		QuadraticIntervals q = build(is, points(s1, s2).stream().map(x -> {
-			return new Point(x, x*x*x / 30.0 + 5 * Math.cos(x));
-		}).collect(Collectors.toList()));
+		QuadraticIntervals q = build(is, x -> x*x*x / 30.0 + 5 * Math.cos(x));
 		output("x^3 div 30 + 5cos", q);
 	}
 	
@@ -95,14 +94,11 @@ public class Task1Test extends TestUtils {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x2();
 		LinearIntervalsBuilder builder = builder(points(s1, s2));
-		LinearIntervals is1 = builder.build(s1);
-		LinearIntervals is2 = builder.build(s2);
+		LinearIntervals is1 = build(builder, s1);
+		LinearIntervals is2 = build(builder, s2);
 		LinearIntervals res = is1.mult(is2).mult(-1.0);
 		output("x^2 times -sin", res);
-		QuadraticIntervals q = build(res, store.cos().getPoints().stream().map(p -> {
-			double x = p.getX();
-			return new Point(x, (x*x - 2) * Math.cos(x) - 2*x*Math.sin(x));
-		}).collect(Collectors.toList()));
+		QuadraticIntervals q = build(res, x -> (x*x - 2) * Math.cos(x) - 2*x*Math.sin(x));
 		output("(x^2-2) cos - 2x sin", q);
 	}
 
@@ -111,8 +107,8 @@ public class Task1Test extends TestUtils {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x2();
 		LinearIntervalsBuilder builder = builder(points(s1, s2));
-		LinearIntervals is1 = builder.build(s1).plus(1.2);
-		LinearIntervals is2 = builder.build(s2).div(2.0);
+		LinearIntervals is1 = build(builder, s1).plus(1.2);
+		LinearIntervals is2 = build(builder, s2).div(2.0);
 		output("x^2 div 2 sin inc 2", is2.div(is1));
 	}
 	
@@ -121,8 +117,8 @@ public class Task1Test extends TestUtils {
 		AbstractFunction s1 = store.cos();
 		AbstractFunction s2 = store.sin();
 		LinearIntervalsBuilder builder = builder(points(s1, s2));
-		LinearIntervals is1 = builder.build(s1).plus(1.2);
-		LinearIntervals is2 = builder.build(s2);
+		LinearIntervals is1 = build(builder, s1).plus(1.2);
+		LinearIntervals is2 = build(builder, s2);
 		output("sin div (cos + 1.2)", is2.div(is1));
 	}
 	
