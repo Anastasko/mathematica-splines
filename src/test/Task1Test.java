@@ -1,6 +1,5 @@
 package test;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -10,7 +9,6 @@ import main.LinearIntervalsBuilder;
 import main.QuadraticIntervals;
 import main.func_store.AbstractFunction;
 import main.func_store.FunctionStore;
-import model.Ozn;
 import model.Point;
 
 public class Task1Test extends TestUtils {
@@ -111,10 +109,21 @@ public class Task1Test extends TestUtils {
 	@Test
 	public void testDiv() {
 		AbstractFunction s1 = store.sin();
-		AbstractFunction s2 = store.x3();
-		LinearIntervals is1 = build(s1).plus(1.2);
-		LinearIntervals is2 = build(s2).div(12.0);
-		output("x^3 div sin inc 2", is2.div(is1));
+		AbstractFunction s2 = store.x2();
+		LinearIntervalsBuilder builder = builder(points(s1, s2));
+		LinearIntervals is1 = builder.build(s1).plus(1.2);
+		LinearIntervals is2 = builder.build(s2).div(2.0);
+		output("x^2 div 2 sin inc 2", is2.div(is1));
+	}
+	
+	@Test
+	public void testDiv2() {
+		AbstractFunction s1 = store.cos();
+		AbstractFunction s2 = store.sin();
+		LinearIntervalsBuilder builder = builder(points(s1, s2));
+		LinearIntervals is1 = builder.build(s1).plus(1.2);
+		LinearIntervals is2 = builder.build(s2);
+		output("sin div (cos + 1.2)", is2.div(is1));
 	}
 	
 }

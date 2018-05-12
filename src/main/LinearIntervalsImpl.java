@@ -420,15 +420,13 @@ public class LinearIntervalsImpl extends Utils implements LinearIntervals {
 		if (equals(l2.getK(), 0.0)) {
 			return list(new LineInterval(x1, x2, l1.unoFunc(x -> x / l2.getM())));
 		}
-		
 		final Function<Double, Double> func = x -> l1.at(x) / l2.at(x);
-		print(true, l1.getK() + " " + l2.getK());
 		final Function<Double, Double> funcd = x -> 
 			- l2.getK() * l1.at(x) / l2.at(x) / l2.at(x) + l1.getK() / l2.at(x);
 		
 		return lu.apply(LinearIntervalsBuilder.build(
 				list(x1, x2),
-				list(-1.0),
+				list(1.0),
 				func,
 				funcd
 			));
