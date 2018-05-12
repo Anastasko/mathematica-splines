@@ -10,6 +10,7 @@ import java.util.function.Function;
 import main.LinearIntervals;
 import model.LineInterval;
 import validation.MyException;
+import validation.Validator;
 
 public class Utils extends Compare {
 	
@@ -59,6 +60,45 @@ public class Utils extends Compare {
 			concat += "\n" + strings[i];
 		}
 		throw new MyException(concat);
+	}
+	
+	public static List<Double> union(List<Double> a, List<Double> b) {
+		List<Double> res = new ArrayList<>();
+		Validator.checkAsc(a);
+		Validator.checkAsc(b);
+		int i=0;
+		int j=0;
+		int n=a.size();
+		int m=b.size();
+		while (i < n || j < m) {
+			if (i == n) {
+				if (lessCheck(res, b.get(j))) res.add(b.get(j));
+				++j;
+			} else if (j == m) {
+				if (lessCheck(res, a.get(i))) res.add(a.get(i));
+				++i;
+			} else {
+				if (equals(a.get(i), b.get(j))) {
+					if (lessCheck(res, a.get(i))) {
+						res.add(a.get(i));
+					}
+					++i;
+					++j;
+				} else if (less(a.get(i), b.get(j))) {
+					if (lessCheck(res, a.get(i))) res.add(a.get(i));
+					++i;
+				} else {
+					if (lessCheck(res, a.get(i))) res.add(b.get(j));
+					++j;
+				}
+			}
+		}
+		return res;
+	}
+
+	private static boolean lessCheck(List<Double> list, Double d) {
+		if (list.isEmpty()) return true;
+		return less(last(list), d);
 	}
 
 }

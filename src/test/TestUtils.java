@@ -79,8 +79,12 @@ public class TestUtils extends Utils {
 		}
 	}
 
-	protected LinearIntervals build(AbstractFunction s) {
-		return LinearIntervalsBuilder.build(s.getSp(), s.getSpozn(), s.getY(), s.getYd());
+	protected LinearIntervalsBuilder builder(List<Double> points) {
+		return new LinearIntervalsBuilder(points);
+	}
+	
+	protected LinearIntervals build(AbstractFunction f) {
+		return new LinearIntervalsBuilder(f.getSp()).build(f);
 	}
 	
 	protected QuadraticIntervals build(LinearIntervals i, List<Point> points) {

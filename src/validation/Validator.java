@@ -47,4 +47,12 @@ public class Validator extends Utils {
 //		}
 	}
 
+	public static void checkAsc(List<Double> a) {
+		for(int i=0;i<a.size()-1;++i) {
+			if (greater(a.get(i), a.get(i+1))) {
+				fail("checkAsc: " + a.get(i) + " > " + a.get(i+1));
+			}
+		}
+	}
+
 }

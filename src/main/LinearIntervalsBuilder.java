@@ -3,6 +3,7 @@ package main;
 import java.util.List;
 import java.util.function.Function;
 
+import main.func_store.AbstractFunction;
 import model.Interval;
 import model.Line;
 import model.LineInterval;
@@ -11,13 +12,15 @@ import utils.Utils;
 import validation.MyException;
 
 public class LinearIntervalsBuilder extends Utils {
+	
+	private List<Double> sp;
+	
+	public LinearIntervalsBuilder(List<Double> sp) {
+		this.sp = sp;
+	}
 
-	public static LinearIntervals build(
-			List<Double> sp,
-			List<Double> spozn,
-			Function<Double, Double> y,
-			Function<Double, Double> yd) {
-		
+	public static LinearIntervals build(List<Double> sp, List<Double> spozn, Function<Double, Double> y, Function<Double, Double> yd) {
+			
 		if (sp.size() != spozn.size() + 1) {
 			throw new MyException("sp.size() != spozn.size() + 1");
 		}
@@ -63,6 +66,13 @@ public class LinearIntervalsBuilder extends Utils {
 			}
 		}
 		return res;
+	}
+
+	public LinearIntervals build(AbstractFunction f) {
+		List<Double> spozn = f.getSpozn(sp);
+		Function<Double, Double> y = f.getY();
+		Function<Double, Double> yd = f.getYd();
+		return build(sp, spozn, y, yd);
 	}
 
 }

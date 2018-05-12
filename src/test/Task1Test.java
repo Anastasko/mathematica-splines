@@ -1,13 +1,16 @@
 package test;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import main.LinearIntervals;
+import main.LinearIntervalsBuilder;
 import main.QuadraticIntervals;
 import main.func_store.AbstractFunction;
 import main.func_store.FunctionStore;
+import model.Ozn;
 import model.Point;
 
 public class Task1Test extends TestUtils {
@@ -53,8 +56,9 @@ public class Task1Test extends TestUtils {
 	public void testPlus() {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x2();
-		LinearIntervals is1 = build(s1);
-		LinearIntervals is2 = build(s2);
+		LinearIntervalsBuilder builder = builder(points(s1, s2));
+		LinearIntervals is1 = builder.build(s1);
+		LinearIntervals is2 = builder.build(s2);
 		LinearIntervals is = is1.mult(5).plus(is2.div(10));
 		output("x^2 div 10 + 5sin", is);
 		QuadraticIntervals q = build(is, store.cos().getPoints().stream().map(p -> {
@@ -64,12 +68,17 @@ public class Task1Test extends TestUtils {
 		output("x^3 div 30 - 5cos", q);
 	}
 
+	private List<Double> points(AbstractFunction s1, AbstractFunction s2) {
+		return union(s1.getSp(), s2.getSp());
+	}
+
 	@Test
 	public void testMinus() {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x2();
-		LinearIntervals is1 = build(s1);
-		LinearIntervals is2 = build(s2);
+		LinearIntervalsBuilder builder = builder(points(s1, s2));
+		LinearIntervals is1 = builder.build(s1);
+		LinearIntervals is2 = builder.build(s2);
 		LinearIntervals is = is2.div(10).minus(is1.mult(5));
 		output("x^2 div 10 - 5sin", is);
 		QuadraticIntervals q = build(is, store.cos().getPoints().stream().map(p -> {
@@ -83,8 +92,9 @@ public class Task1Test extends TestUtils {
 	public void testTimes() {
 		AbstractFunction s1 = store.sin();
 		AbstractFunction s2 = store.x3();
-		LinearIntervals is1 = build(s1);
-		LinearIntervals is2 = build(s2);
+		LinearIntervalsBuilder builder = builder(points(s1, s2));
+		LinearIntervals is1 = builder.build(s1);
+		LinearIntervals is2 = builder.build(s2);
 		output("x^3 times -sin", is1.mult(is2).mult(-1.0));
 	}
 
