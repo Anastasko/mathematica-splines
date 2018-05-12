@@ -10,7 +10,7 @@ import main.func_store.FunctionStore;
 
 public class Task1Test extends TestUtils {
 	
-	private static double LEFT = -4*Pi;
+	private static double LEFT = -Pi;
 	private static double RIGHT = 2*Pi;
 	
 	private boolean combinePoints = false;
