@@ -67,9 +67,15 @@ public class Task1Test extends TestUtils {
 		}).collect(Collectors.toList()));
 		output("x^3 div 30 - 5cos", q);
 	}
-
-	private List<Double> points(AbstractFunction s1, AbstractFunction s2) {
-		return union(s1.getSp(), s2.getSp());
+	
+	@Test
+	public void testX2onSinPoints() {
+		AbstractFunction s1 = store.sin();
+		AbstractFunction s2 = store.x2();
+		LinearIntervalsBuilder builder = builder(points(s1, s2));
+		LinearIntervals is2 = builder.build(s2);
+		LinearIntervals is = is2.div(10);
+		output("x^2 div 10 on sin", is);
 	}
 
 	@Test

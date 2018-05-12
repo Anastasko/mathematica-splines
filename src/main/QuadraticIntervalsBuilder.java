@@ -31,7 +31,7 @@ public class QuadraticIntervalsBuilder extends Utils {
 
 	private static void process(List<LinesInterval> iis, Point pl, Point pr, int l, int r, QuadraticIntervals res) {
 		print("l=" + l + " r=" + r);
-		if (r - l != 1) fail("r - l != 1");
+//		if (r - l != 1) fail("r - l != 1");
 		LinesInterval li = iis.get(l);
 		LinesInterval ri = iis.get(r);
 		print("pl = " + pl + " pr = " + pr);

@@ -121,6 +121,7 @@ ff[x_] = (x^2 - 8*x +7)*Sin[2*x-1] + Cos[5*x+1]*2^(2x-3);
 
 MakeDemo[0, "x^3 div sin inc 2", Function[x, x*x*x/12/(-Sin[x] + 1.2)]]
 MakeDemo[1, "x^3 times -sin", Function[x, -x*x*x*Sin[x]]]
+MakeDemo[0, "x^2 div 10 on sin", Function[x, x*x/10]]
 MakeDemo2[1, "x^3 div 30 - 5cos", Function[x, x*x*x/30 - 5*Cos[x]]]
 MakeDemo[1, "x^2 div 10 + 5sin", Function[x, x*x/10 + 5*Sin[x]]]
 MakeDemo2[1, "x^3 div 30 + 5cos", Function[x, x*x*x/30 + 5*Cos[x]]]

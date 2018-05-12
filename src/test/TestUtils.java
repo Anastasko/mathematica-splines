@@ -90,5 +90,9 @@ public class TestUtils extends Utils {
 	protected QuadraticIntervals build(LinearIntervals i, List<Point> points) {
 		return QuadraticIntervalsBuilder.build(i, points);
 	}
+	
+	protected List<Double> points(AbstractFunction s1, AbstractFunction s2) {
+		return union(s1.getSp(), s2.getSp());
+	}
 
 }
