@@ -248,6 +248,43 @@ public class LinearIntervalsImpl extends Utils implements LinearIntervals {
 		two.reverse();
 		return new Pair<>(one, two);
 	}
+	
+	/**
+	 * на вхід обмежник @this
+	 * на вихід обмежник зі всіма точками (точки взяті з lower в upper і навпаки)
+	 */
+	@Override
+	public LinearIntervals normalize() {
+		LinearIntervalsImpl res = new LinearIntervalsImpl(getInterval());
+		List<LineInterval> a = getLower();
+		List<LineInterval> b = getUpper();
+		int i = a.size() - 1;
+		int j = b.size() - 1;
+		double prev = a.get(i).getX2();
+		while (i >= 0 || j >= 0) {
+			LineInterval i1 = a.get(i);
+			LineInterval i2 = b.get(j);
+			if (equals(i1.getX1(), i2.getX1())) {
+				res.getLower().add(i1.withX2(prev));
+				res.getUpper().add(i2.withX2(prev));
+				prev = i1.getX1();
+				--i;
+				--j;
+			} else if (less(i1.getX1(), i2.getX1())) {
+				res.getLower().add(i1.withX(i2.getX1(), prev));
+				res.getUpper().add(i2.withX2(prev));
+				prev = i2.getX1();
+				--j;
+			} else {
+				res.getLower().add(i1.withX2(prev));
+				res.getUpper().add(i2.withX(i1.getX1(), prev));
+				prev = i1.getX1();
+				--i;
+			}
+		}
+		res.reverse();
+		return res;
+	}
 
 	/**
 	 * на вхід @this обмежник
@@ -316,6 +353,7 @@ public class LinearIntervalsImpl extends Utils implements LinearIntervals {
 		return interval;
 	}
 
+	@Override
 	public LinearIntervals plus(double d) {
 		LinearIntervals res = empty();
 		lowerUpper(lu -> {
@@ -327,6 +365,7 @@ public class LinearIntervalsImpl extends Utils implements LinearIntervals {
 		return res;
 	}
 
+	@Override
 	public LinearIntervals div(LinearIntervals intervals) {
 		Pair<LinearIntervals, LinearIntervals> pair = normalize(this.addZeroes(), intervals);
 		LinearIntervalsImpl res = empty();

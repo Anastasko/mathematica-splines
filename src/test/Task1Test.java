@@ -61,8 +61,7 @@ public class Task1Test extends TestUtils {
 		LinearIntervals is2 = builder.build(s2);
 		LinearIntervals is = is1.mult(5).plus(is2.div(10));
 		output("x^2 div 10 + 5sin", is);
-		QuadraticIntervals q = build(is, store.cos().getPoints().stream().map(p -> {
-			double x = p.getX();
+		QuadraticIntervals q = build(is, points(s1, s2).stream().map(x -> {
 			return new Point(x, x*x*x / 30.0 - 5 * Math.cos(x));
 		}).collect(Collectors.toList()));
 		output("x^3 div 30 - 5cos", q);
@@ -87,8 +86,7 @@ public class Task1Test extends TestUtils {
 		LinearIntervals is2 = builder.build(s2);
 		LinearIntervals is = is2.div(10).minus(is1.mult(5));
 		output("x^2 div 10 - 5sin", is);
-		QuadraticIntervals q = build(is, store.cos().getPoints().stream().map(p -> {
-			double x = p.getX();
+		QuadraticIntervals q = build(is, points(s1, s2).stream().map(x -> {
 			return new Point(x, x*x*x / 30.0 + 5 * Math.cos(x));
 		}).collect(Collectors.toList()));
 		output("x^3 div 30 + 5cos", q);
@@ -97,11 +95,17 @@ public class Task1Test extends TestUtils {
 	@Test
 	public void testTimes() {
 		AbstractFunction s1 = store.sin();
-		AbstractFunction s2 = store.x3();
+		AbstractFunction s2 = store.x2();
 		LinearIntervalsBuilder builder = builder(points(s1, s2));
 		LinearIntervals is1 = builder.build(s1);
 		LinearIntervals is2 = builder.build(s2);
-		output("x^3 times -sin", is1.mult(is2).mult(-1.0));
+		LinearIntervals res = is1.mult(is2).mult(-1.0);
+		output("x^2 times -sin", res);
+		QuadraticIntervals q = build(res, store.cos().getPoints().stream().map(p -> {
+			double x = p.getX();
+			return new Point(x, (x*x - 2) * Math.cos(x) - 2*x*Math.sin(x));
+		}).collect(Collectors.toList()));
+		output("(x^2-2) cos - 2x sin", q);
 	}
 
 	@Test

@@ -32,4 +32,6 @@ public interface LinearIntervals {
 
 	LinearIntervals addZeroes();
 
+	LinearIntervals normalize();
+
 }

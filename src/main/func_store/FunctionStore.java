@@ -26,5 +26,9 @@ public class FunctionStore extends Utils {
 	public AbstractFunction x2() {
 		return X2FunctionFactory.create(interval);
 	}
+	
+	public AbstractFunction x() {
+		return XFunctionFactory.create(interval);
+	}
 
 }

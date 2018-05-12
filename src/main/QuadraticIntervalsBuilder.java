@@ -17,7 +17,7 @@ public class QuadraticIntervalsBuilder extends Utils {
 		int l = 0;
 		int r = 1;
 		print(points);
-		List<LinesInterval> iis = intervals.intervals();
+		List<LinesInterval> iis = intervals.normalize().intervals();
 		int len = iis.size();
 		for(int i=0; i<points.size()-1; ++i) {
 			Point pl = points.get(i);
