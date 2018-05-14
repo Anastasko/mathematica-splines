@@ -13,7 +13,7 @@ public class Task1Test extends TestUtils {
 	private static double LEFT = -Pi;
 	private static double RIGHT = 2*Pi;
 	
-	private boolean combinePoints = false;
+	private boolean combinePoints = !false;
 	
 	private LinearIntervals build(LinearIntervalsBuilder builder, AbstractFunction s) {
 		return combinePoints ? builder.build(s) : build(s);

@@ -5,32 +5,29 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import model.Ozn;
 import model.Point;
 import utils.Utils;
 
 public abstract class AbstractFunction extends Utils {
 	
-	private Ozn ozn;
+	private List<Double> sp;
+	private List<Double> spozn;
 	private Function<Double, Double> y;
 	private Function<Double, Double> yd;
 	
 	public AbstractFunction(List<Double> sp, List<Double> spozn, Function<Double, Double> y, Function<Double, Double> yd) {
-		this.ozn = new Ozn(sp, spozn);
+		this.sp = sp;
+		this.spozn = spozn;
 		this.y = y;
 		this.yd = yd;
 	}
 
 	public List<Double> getSp() {
-		return ozn.getSp();
+		return sp;
 	}
 
 	public List<Double> getSpozn() {
-		return ozn.getSpozn();
-	}
-	
-	public Ozn getOzn() {
-		return ozn;
+		return spozn;
 	}
 
 	public Function<Double, Double> getY() {
