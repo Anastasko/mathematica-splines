@@ -16,26 +16,23 @@ public class QuadraticIntervalsBuilder extends Utils {
 		QuadraticIntervals res = new QuadraticIntervalsImpl(intervals.getInterval());
 		List<LinesInterval> iis = intervals.normalize().intervals();
 		iis.forEach(li -> {
-			process(li, res, y);
+			buildOne(li, res, y);
 		});
 		return res;
 	}
 
-	private static void process(LinesInterval li, QuadraticIntervals res, Function<Double, Double> y) {
+	private static void buildOne(LinesInterval li, QuadraticIntervals res, Function<Double, Double> y) {
 		
 		Point pl = new Point(li.getX1(), y.apply(li.getX1()));
 		Point pr = new Point(li.getX2(), y.apply(li.getX2()));
 		
 		Parabola pnA = new Parabola(0.5*li.getLower().getK(), li.getLower().getM(), 0);
-		pnA = pnA.up(-pnA.at(pl.getX()) + pl.getY());
-		
 		Parabola pvA = new Parabola(0.5*li.getUpper().getK(), li.getUpper().getM(), 0);
-		pvA = pvA.up(-pvA.at(pl.getX()) + pl.getY());
-		
 		Parabola pvB = new Parabola(0.5*li.getLower().getK(), li.getLower().getM(), 0);
-		pvB = pvB.up(-pvB.at(pr.getX()) + pr.getY());
-		
 		Parabola pnB = new Parabola(0.5*li.getUpper().getK(), li.getUpper().getM(), 0);
+		pnA = pnA.up(-pnA.at(pl.getX()) + pl.getY());		
+		pvA = pvA.up(-pvA.at(pl.getX()) + pl.getY());
+		pvB = pvB.up(-pvB.at(pr.getX()) + pr.getY());
 		pnB = pnB.up(-pnB.at(pr.getX()) + pr.getY());
 		
 		Interval pp = i(pl.getX(), pr.getX());
